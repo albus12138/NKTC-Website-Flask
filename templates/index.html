@@ -1,0 +1,210 @@
+{% extends "layout.html" %}
+
+{% block header %}
+    <div class="row">
+        <div class="col-xs-12">
+            <img src="{{ url_for('static', filename='logo.png') }}" width="100%" class="hidden-lg hidden-md"/>
+            <img src="{{ url_for('static', filename='logo-small.png') }}" width="100%" class="hidden-sm hidden-xs"/>
+        </div>
+    </div>
+    <nav class="navbar navbar-default">
+        <div class="navbar-header">
+            <button class="navbar-toggle" data-toggle="collapse" data-target="#responsive-navbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="#" class="navbar-brand"><strong>NKTRY</strong></a>
+        </div>
+        <div class="collapse navbar-collapse" id="responsive-navbar">
+            <ul class="nav navbar-nav">
+
+            <!-- 主菜单 -->
+                {% for item in menu %}
+                {% if item.name == '首页' %}
+                    <li class="active"><a href="{{ url_for('index') }}">首页</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('list', name=item.name) }}">{{ item.name }}</a></li>
+                {% endif %}
+                {% endfor %}
+
+            </ul>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block silder %}
+    <div class="carousel slide" data-ride="carousel" id="slideshow" data-interval="3000">
+        <ol class="carousel-indicators">
+
+        <!-- 跑马灯按钮【我知道写的太蛋疼。。你改下，主要是因为我不知道怎么查元组索引。。】 -->
+            {% for item in showcase %}
+                {% if showcase[0] == item %}
+                    <li data-target="#slideshow" data-slide-to="0" class="active"></li>
+                {% elif showcase[1] == item %}
+                    <li data-target="#slideshow" data-slide-to="1"></li>
+                {% elif showcase[2] == item %}
+                    <li data-target="#slideshow" data-slide-to="2"></li>
+                {% elif showcase[3] == item %}
+                    <li data-target="#slideshow" data-slide-to="3"></li>
+                {% elif showcase[4] == item %}
+                    <li data-target="#slideshow" data-slide-to="4"></li>
+                {% endif %}
+            {% endfor %}
+
+        </ol>
+        <div class="carousel-inner">
+
+        <!-- 跑马灯图片&文字 -->
+            {% for item in showcase %}
+                {% if shocase[0] == item %}
+                    <div class="item active">
+                        <img src="img/{{ item.img }}" alt="#"/>
+                    </div>
+                {% else %}
+                    <div class="item">
+                        <img src="img/{{ item.img }}" alt="#"/>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+        </div>
+        <a href="#slideshow" data-slide="prev" class="left carousel-control">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a href="#slideshow" data-slide="next" class="right carousel-control">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+{% endblock %}
+
+{% block content %}
+<div class="container main">
+    <div class="row">
+
+    <!-- 首页新闻 -->
+        <div class="col-xs-12 col-sm-4 hr">
+        {% for item in news_1 %}
+            {% if item == news_1[0] %}
+                <div class="row">
+                    <div class="col-xs-6">
+                        <img src="img/{{ item.main }}.jpg" alt="" class="img-thumbnail inline-block"/>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="row">
+                                    <h4 class="inline-block"><a href="{{ url_for('page', main=item.main, secondary=item.sceondary, title=item.title) }}">{{ item.title }}</a></h4>
+                                        <blockquote class="index-news-content hidden-sm hidden-xs">
+                                            <p>{{ item.text }}...</p>
+                                        </blockquote>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row index-news-list">
+                    <div class="col-xs-12">
+                        <ul class="list-unstyled">
+                            <li><a href="{{ url_for('page', main=item.main, secondary=item.sceondary, title=item.title) }}">{{ item.title }}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+                <div class="col-xs-12 col-sm-4 hr">
+        {% for item in news_2 %}
+            {% if item == news_2[0] %}
+                <div class="row">
+                    <div class="col-xs-6">
+                        <img src="img/{{ item.main }}.jpg" alt="" class="img-thumbnail inline-block"/>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="row">
+                                    <h4 class="inline-block"><a href="{{ url_for('page', main=item.main, secondary=item.sceondary, title=item.title) }}">{{ item.title }}</a></h4>
+                                        <blockquote class="index-news-content hidden-sm hidden-xs">
+                                            <p>{{ item.text }}...</p>
+                                        </blockquote>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row index-news-list">
+                    <div class="col-xs-12">
+                        <ul class="list-unstyled">
+                            <li><a href="{{ url_for('page', main=item.main, secondary=item.sceondary, title=item.title) }}">{{ item.title }}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+                <div class="col-xs-12 col-sm-4 hr">
+        {% for item in news_3 %}
+            {% if item == news_3[0] %}
+                <div class="row">
+                    <div class="col-xs-6">
+                        <img src="img/{{ item.main }}.jpg" alt="" class="img-thumbnail inline-block"/>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="row">
+                                    <h4 class="inline-block"><a href="{{ url_for('page', main=item.main, secondary=item.sceondary, title=item.title) }}">{{ item.title }}</a></h4>
+                                        <blockquote class="index-news-content hidden-sm hidden-xs">
+                                            <p>{{ item.text }}...</p>
+                                        </blockquote>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row index-news-list">
+                    <div class="col-xs-12">
+                        <ul class="list-unstyled">
+                            <li><a href="{{ url_for('page', main=item.main, secondary=item.sceondary, title=item.title) }}">{{ item.title }}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<!-- 静态部分 -->
+<div class="container footer">
+    <div class="row">
+        <div class="col-sm-3 col-xs-6">
+            <h4><strong>关注我们</strong></h4>
+            <ul class="list-unstyled contactus-list">
+                <li>腾讯微博</li>
+                <li>新浪微博</li>
+                <li>人人公共主页</li>
+            </ul>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+            <h4><strong>关注我们</strong></h4>
+            <ul class="list-unstyled contactus-list">
+                <li>腾讯微博</li>
+                <li>新浪微博</li>
+                <li>人人公共主页</li>
+            </ul>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+            <h4><strong>关注我们</strong></h4>
+            <ul class="list-unstyled contactus-list">
+                <li>腾讯微博</li>
+                <li>新浪微博</li>
+                <li>人人公共主页</li>
+            </ul>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+            <h4><strong>关注我们</strong></h4>
+            <ul class="list-unstyled contactus-list">
+                <li>腾讯微博</li>
+                <li>新浪微博</li>
+                <li>人人公共主页</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

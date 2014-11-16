@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% from "snippet/form.html" import form_field %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="col-xs-4 col-md-offset-4">
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {{ form_field(form.username) }}
+        {{ form_field(form.password) }}
+        {{ form_field(form.otp_token) }}
+        <button type="submit" class="btn btn-primary">喵</button>
+    </form>
+</div>
+{% endblock %}

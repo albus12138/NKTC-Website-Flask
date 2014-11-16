@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ch-hanz">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NKTC管理中心-首页</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="css/app.css"/>
+    <!--[if lt IE 9]>
+    <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="http://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+		<style>
+	.row{
+		margin-bottom:10px;
+	}
+	.glyphicon{
+		margin-right:10px;
+	}
+	
+	
+	
+	</style>
+
+</head>
+<body>
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			<ul class="nav nav-tabs  nav-justified" role="tablist">
+				<li role="presentation"><a href="admin-list.html">分类管理</a></li>
+				<li role="presentation"><a href="admin-slider.html">专题管理</a></li>
+				<li role="presentation"><a href="admin-user.html">用户管理</a></li>
+				<li role="presentation" class="active"><a href="#">文章管理</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container" style="margin-top:20px;">
+	<div class="row">
+		<div class="col-xs-1 text-center">#</div>
+		<div class="col-xs-3 text-center">标题</div>
+		<div class="col-xs-1 text-center">作者</div>
+		<div class="col-xs-2 text-center">分类</div>
+		<div class="col-xs-3 text-center">发布时间</div>
+		<div class="col-xs-2 text-center">操作</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-xs-1 text-center">1</div>
+		<div class="col-xs-3 text-center">I LOVE ZLY</div>
+		<div class="col-xs-1 text-center">XHY</div>
+		<div class="col-xs-2 text-center">机器人实验室</div>
+		<div class="col-xs-3 text-center">2014-11-09 17:47:38</div>
+		<div class="col-xs-2 text-center">
+			<div class="btn-group btn-group-xs">
+				<button type="button" class="btn btn-success" onClick="window.open('admin-article-content-1.html')">编辑</button><!--替换对应链接-->
+				<button type="button" class="btn btn-danger disabled" action="del" tid="1">删除</button>
+			</div>
+
+		</div>
+	</div>
+
+	
+	<div class="row">
+		<div class="col-xs-1 text-center">2</div>
+		<div class="col-xs-3 text-center">I LOVE XHY</div>
+		<div class="col-xs-1 text-center">ZLT</div>
+		<div class="col-xs-2 text-center">现代工坊</div>
+		<div class="col-xs-3 text-center">2014-11-09 17:47:38</div>
+		<div class="col-xs-2 text-center">
+			<div class="btn-group btn-group-xs">
+				<button type="button" class="btn btn-success" onClick="window.open('admin-article-content-2.html')">编辑</button><!--替换对应链接-->
+				<button type="button" class="btn btn-danger" action="del" tid="2">删除</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<script src="http://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/holder.js"></script>
+<script>
+	//删除逻辑开始
+	$("[action='del']").on('click',function(){
+		var tid=this.getAttribute("tid");
+		$.get("article_del.page",{'tid':tid},function(data){//修改article_del.page为删除用户提交的页面
+			if(data==0){
+				location.reload();
+			}else{
+				window.alert("删除失败，错误原因为："+data+"\n请联系管理员处理");
+			}
+		});
+	})
+</script>
+</body>
+</html>

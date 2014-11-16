@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ch-hanz">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}"/>
+</head>
+<body>
+<div class="container">
+    {% block header %}{% endblock %}
+    <div class="row">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+{% block footer %}{% endblock %}
+
+<div class="container copyright">
+    <div class="row">
+        <div class="col-xs-12">
+                <p class="text-center">津ICP备14004209号-3</p>
+                <div class="col-xs-6"><p>Powered by NKTC网络部</p></div>
+                <div class="col-xs-6 text-right"><p>Copyright © 2012 - 2014 NKTC. All Rights Reserved</p></div>
+        </div>
+    </div>
+</div>
+<script src="http://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/holder.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ch-hanz">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NKTC管理中心-首页</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="css/app.css"/>
+    <!--[if lt IE 9]>
+    <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="http://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .row{
+            margin-bottom:10px;
+        }
+        .glyphicon{
+            margin-right:10px;
+        }
+        .input-group{
+            margin-bottom:20px;
+        }
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <ul class="nav nav-tabs  nav-justified" role="tablist">
+                <li role="presentation"><a href="admin-list.html">分类管理</a></li>
+                <li role="presentation"><a href="admin-slider.html">专题管理</a></li>
+                <li role="presentation" class="active"><a href="#">用户管理</a></li>
+                <li role="presentation"><a href="admin-article-list.html">文章管理</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container" style="margin-top:20px;">
+    <div class="row">
+        <div class="col-xs-6 col-xs-offset-3">
+            <h4 class="text-center" style="margin-bottom:40px">添加用户</h4>
+            <form action="add-user.page" method="post"><!--修改add-user.page为添加用户的页面-->
+                <div class="input-group">
+                    <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
+                    <input type="text" class="form-control" name="username" placeholder="登陆账户名">
+                </div>
+                <!--前台显示作者-->
+                <div class="input-group">
+                    <span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
+                    <input type="text" class="form-control" name="nickname" placeholder="前台发帖显示编辑名">
+                </div>
+                <!--密码-->
+                <div class="input-group">
+                    <span class="glyphicon glyphicon-lock input-group-addon" aria-hidden="true"></span>
+                    <input type="text" class="form-control" name="password" placeholder="密码">
+                </div>
+
+                <div class="input-group">
+                    <span>权限管理：</span>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="func" value="list">菜单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="func" value="user">用户
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="func" value="slider">专题
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="func" value="article">文章
+                    </label>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-12 text-center">
+                        <button type="submit" class="btn btn-default">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="http://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/holder.js"></script>
+</body>
+</html>

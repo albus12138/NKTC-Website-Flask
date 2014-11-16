@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ch-hanz">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NKTC管理中心-用户管理</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}"/>
+    <!--[if lt IE 9]>
+    <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="http://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+		<style>
+	.row{
+		margin-bottom:10px;
+	}
+	.glyphicon{
+		margin-right:10px;
+	}
+    .input-group{
+        margin-bottom:20px;
+    }
+	</style>
+
+</head>
+<body>
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			<ul class="nav nav-tabs  nav-justified" role="tablist">
+				<li role="presentation"><a href="admin-list.html">分类管理</a></li>
+				<li role="presentation"><a href="admin-slider.html">专题管理</a></li>
+				<li role="presentation" class="active"><a href="#">用户管理</a></li>
+				<li role="presentation"><a href="admin-article-list.html">文章管理</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container" style="margin-top:20px;">
+	<div class="row">
+		<div class="col-xs-1 text-center">#</div>
+		<div class="col-xs-2 text-center">用户名</div>
+		<div class="col-xs-3 text-center">最后登陆日期</div>
+		<div class="col-xs-4 text-center">权限</div>
+		<div class="col-xs-2 text-center">操作</div>
+	</div>
+	
+    {% for user in users %}
+	<div class="row">
+		<div class="col-xs-1 text-center">{{ user.id }}</div>
+		<div class="col-xs-2 text-center">{{ user.name }}</div>
+		<div class="col-xs-3 text-center">暂无数据</div>
+		<div class="col-xs-4 text-center">
+            {% if user.permission == 'admin' %}
+                <label class="checkbox-inline">
+                    <input type="checkbox" value="list" disabled checked>菜单
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" value="user" disabled checked>用户
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" value="slider" disabled checked>专题
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" value="article" disabled checked>文章
+                </label>
+            {% else %}
+                <label class="checkbox-inline">
+                    <input type="checkbox" value="list" disabled>菜单
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" value="user" disabled>用户
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" value="slider" disabled>专题
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" value="article" disabled checked>文章
+                </label>
+            {% endif %}
+        </div>
+		<div class="col-xs-2 text-center">
+			<div class="btn-group btn-group-xs">
+				<button type="button" class="btn btn-success" data-toggle="modal" data-target="#edit">编辑</button>
+				<button type="button" class="btn btn-danger" action="del" uid="{{ user.id }}">删除</button>
+			</div>
+		</div>
+	</div>
+    {% endfor %}
+
+</div>
+
+
+
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">编辑 {{ user.name }} 的信息</h4>
+            </div>
+            <div class="modal-body">
+                <form id="updata-user" action="{{ url_for('admin_user') }}" method="POST">
+                    <!--隐藏域 用于保存用户的UID值 提交到后台后 需要鉴权-->
+                    <input type="hidden" name="uid" value="{{ user.id }}">
+                    <!--用户名-->
+                    <div class="input-group">
+                        <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
+                        <input type="text" class="form-control" name="username" value="{{ user.name }}">
+                    </div>
+                    <!--前台显示作者-->
+                    <div class="input-group">
+                        <span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
+                        <input type="text" class="form-control" name="nickname" value="{{ user.nickname }}">
+                    </div>
+                    <!--密码-->
+                    <div class="input-group">
+                        <span class="glyphicon glyphicon-lock input-group-addon" aria-hidden="true"></span>
+                        <input type="text" class="form-control" name="password" placeholder="如果需要重置密码请填写新密码，否则请留空">
+                    </div>
+
+                    <div class="input-group">
+                        <span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
+                        <input type="text" class="form-control" name="permission" value="{{ user.permission }}">
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="updata">更新</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="http://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/holder.js') }}"></script>
+<script>
+/* 
+    //更新逻辑开始
+    $('#updata').on('click', function () {
+        var fun=[];
+        $("input[name='func']").each(function(){
+            if(this.checked)
+                fun.push($(this).val());
+        });
+        var func=new Object;
+        func.name="func";
+        func.value=fun.toString();
+        var updata_data = $("input[type='text']").serializeArray();
+        updata_data.push(func);
+        console.log(updata_data);
+        $.post("user_edit.page",updata_data,function(data){//修改user_edit.page为编辑用户提交的页面
+            if(data==0){
+                $('#edit').modal('hide');
+            }else{
+                window.alert("更新失败，错误原因为："+data);
+           }
+        });
+    })
+    //更新逻辑结束
+*/
+    //删除逻辑开始     !提交到后台后 需要鉴权!
+    $("[action='del']").on('click',function(){
+        var uid=this.getAttribute("uid");
+        $.get("/user-del/"+uid);//修改user_del.page为删除用户提交的页面
+        location.reload();
+    })
+    //删除逻辑结束 
+
+    $("#updata").click(function(){
+        $("#updata-user").sumbit();
+    });
+</script>
+</body>
+</html>
