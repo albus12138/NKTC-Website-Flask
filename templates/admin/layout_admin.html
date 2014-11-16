@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ch-hanz">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}"/>
+    <!--[if lt IE 9]>
+    <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="http://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<style>
+    	.row{
+	   	   margin-bottom:10px;
+	   }
+	   .glyphicon{
+		  margin-right:10px;
+	   }
+        .input-group{
+            margin-bottom:20px;
+        }
+	</style>
+</head>
+
+<body>
+
+{% block menu %}{% endblock %}
+{% block content %}{% endblock %}
+
+<script src="http://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/holder.js') }}"></script>
+
+{% block script %}{% endblock %}
+
+</body>
+</html>

@@ -182,6 +182,29 @@ def del_user(uid):
     return redirect(url_for('admin_user'))
 
 
+@app.route("/user-add", methods=["GET", "POST"])
+@root_required
+def add_user():
+    if request.method == "POST":
+        if request.form['username'] is None:
+            raise ValueError('请输入登录用户名')
+        if request.form['nickname'] is None:
+            raise ValueError('请输入前端显示用户名')
+        if request.form['password'] is None:
+            raise ValueError('请输入登录密码')
+        if request.form['permission'] is None:
+            raise ValueError('请输入权限信息')
+        user = User()
+        user.name = request.form['username']
+        user.nickname = request.form['nickname']
+        user.password = request.form['password']
+        user.permission = request.form['permission']
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('admin_user'))
+
+    if request.method == "GET":
+        return render_template('admin/add-user.html')
 
 @app.route("/article")
 @login_required
