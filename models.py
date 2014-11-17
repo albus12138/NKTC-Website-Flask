@@ -14,11 +14,12 @@ def _get_author_id():
 class Menu(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(20))
-    parent_id = db.Column(
-        db.Integer,
-        db.ForeignKey('menu.id'), index=True, nullable=True,
-    )
-    parent = db.relationship("Menu")
+#    parent_id = db.Column(
+#        db.Integer,
+#        db.ForeignKey("menu.id"), index=True, nullable=True,
+#    )
+#    parent = db.relationship("Menu")
+    parent = db.Column(db.String(20))
 
     def __init__(self, name, parent):
         self.name = name
@@ -52,7 +53,7 @@ class User(db.Model):
 
     def validate_otp(self, token):
         return True
-        return self.otp_auth.valid_totp(int(token))  # TODO: zly 要带手机
+        #return self.otp_auth.valid_totp(int(token))  # TODO: zly 要带手机
 
     def check_password(self, p):
         return p == self.password
@@ -68,21 +69,21 @@ class Article(db.Model):
         db.ForeignKey('user.id'), index=True, nullable=False,
         default=_get_author_id
     )
-    author = db.relationship(User)
+    author = db.relationship("User")
 
     date = db.Column(db.DateTime(), default=datetime.now())
-
-    main_id = db.Column(
-        db.Integer,
-        db.ForeignKey('menu.id'), index=True, nullable=False,
-    )
-    main = db.relationship(Menu)
 
     secondary_id = db.Column(
         db.Integer,
         db.ForeignKey('menu.id'), index=True, nullable=False,
     )
-    secondary = db.relationship(Menu)
+    secondary = db.relationship("Menu")
+
+#    main_id = db.Column(
+#        db.Integer,
+#        db.ForeignKey('menu.id'), index=True, nullable=False,
+#    )
+#    main = db.relationship(Menu)
 
     def save(self):
         db.session.add(self)
