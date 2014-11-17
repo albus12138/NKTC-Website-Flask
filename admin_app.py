@@ -54,7 +54,7 @@ class CreateArticleForm(Form):
     secondary = (
         "要...发到哪里",
         validators=[Required()],
-        query_factory=Menu.query_all, # TODO: 所有parent不为'root'的菜单项，如果permission != 'admin'，不显示这一项
+        query_factory=Menu.query_all,  # TODO: 所有parent不为'root'的菜单项，如果permission != 'admin'，不显示这一项
         get_pk=lambda a: a.id,
         get_label=lambda a: a.name
     )
@@ -114,7 +114,7 @@ def root_required(method):
 @app.route("/")
 @login_required
 def index():
-    return render_template('index.html')
+    return redirect(url_for('admin_article_list'))
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -135,22 +135,44 @@ def upload_file():
         return url_for("static", fiename="upload/%s" % filename)
 
 
+########################################################################################################################
 @app.route("/list")
 @root_required
 def admin_list():
     main_menu = Menu.query.filter_by(parent='root').all()
     secondary_menu = {}
     for item in main_menu:
-       secondary_menu[item.name] = Menu.query.filter_by(parent=item.name).all()
+       secondary_menu[item.id] = Menu.query.filter_by(parent=item.name).all()
     return render_template('admin/list.html', main_menu=main_menu, secondary_menu=secondary_menu)
 
 
+@app.route("/;ist-del/<uid>")
+@root_required
+def del_slider(uid):
+    list = Menu.query.filter_by(id=uid).first()
+    db.session.delete(list)
+    db.session.commit()
+    return redirect(url_for('admin_list'))
+
+
+########################################################################################################################
 @app.route("/slider")
 @root_required
 def admin_slider():
-    showcase = Showcase.query.order_by("-id").limit(5)
+    showcase = Showcase.query.order_by("-id").all()
     return render_template('admin/slider.html', showcase=showcase)
 
+
+@app.route("/slider-del/<uid>")
+@root_required
+def del_slider(uid):
+    slider = Showcase.query.filter_by(id=uid).first()
+    db.session.delete(slider)
+    db.session.commit()
+    return redirect(url_for('admin_slider'))
+
+
+########################################################################################################################
 @app.route("/user", methods=["GET", "POST"])
 @root_required
 def admin_user():
@@ -206,14 +228,16 @@ def add_user():
     if request.method == "GET":
         return render_template('admin/add-user.html')
 
+
+########################################################################################################################
 @app.route("/article")
 @login_required
-def admin_article_list(main, second):
+def admin_article_list():
     article = Article.query.ilter_by(secondary=g.user.permission).order_by("-id").all()
     return render_template('admin/article-list.html', article=article)
 
 
-@app.route("/article/add")
+@app.route("/article-add")
 @login_required
 def add_article():
     form = CreateArticleForm()
@@ -223,6 +247,30 @@ def add_article():
     return render_template("admin/add_article.html", form=form)
 
 
+@app.route("/article-edit/<uid>")
+@login_required
+def article_edit(uid):
+    article = Article.query.filter_by(id=uid).first()
+    if g.user.permission == article.secondary or g.user.permission == 'admin':  # TODO:文章分类
+        form = None  # TODO: 把对应ID文章填入form，返回到编辑器
+        return render_template('admin/add_article.html', form=form)
+    else:
+        return abort(401)
+
+
+@app.route("/article-del/<uid>")
+@login_required
+def article_del(uid):
+    article = Article.query.filter_by(id=uid).first()
+    if g.user.permission == article.secondary or g.user.permission == 'admin':  # TODO:文章分类
+        db.session.delete(article)
+        db.session.commit()
+        return 0
+    else:
+        return 'No Permission!'
+
+
+########################################################################################################################
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('page_not_found.html'), 404
