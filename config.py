@@ -12,3 +12,4 @@ class DevelopmentConfig(Config):
     DEGUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///Development.db'
     SECRET_KEY = '233'
+    DEBUG_TB_ENABLED = True

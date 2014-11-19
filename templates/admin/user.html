@@ -75,6 +75,7 @@
         </div>
     </div>
 </div>
+{% set user = users[0] %}
 <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -116,6 +117,7 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block script %}
@@ -129,7 +131,7 @@
     //删除逻辑开始     !提交到后台后 需要鉴权!
     $("[action='del']").on('click',function(){
         var uid=this.getAttribute("uid");
-        $.get("/user-del/"+uid);//修改user_del.page为删除用户提交的页面
+        $.get("/user/"+uid+"/del");//修改user_del.page为删除用户提交的页面
         location.reload();
     })
     //删除逻辑结束 

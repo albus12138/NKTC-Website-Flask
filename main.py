@@ -12,6 +12,8 @@ app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 db.init_app(app)
 db.app = app
+from flask_debugtoolbar import DebugToolbarExtension
+DebugToolbarExtension(app)
 
 #Function
 def get_menu(name):
@@ -29,19 +31,20 @@ def index():
     return render_template('index.html', menu=menu, showcase=showcase, news_1=news_1, news_2=news_2, news_3=news_3)
 
 @app.route('/category/<name>/<title>')
-def list(name, title=None):
-    if title is None:
+def list(name, title):
+    if title is 'root':
         x = get_menu(name)
         title = x[0]
     main_menu = get_menu('root')
+    secondary = Menu.query.filter_by(name=title).first()
     secondary_menu = get_menu(name)
-    content = Article.query.filter_by(main=name, secondary=title).all()
+    content = Article.query.filter_by(main=name, secondary=secondary).all()
     return render_template('list.html', menu=main_menu, list=secondary_menu, news=content, title=title, parent=name)
 
-@app.route('/article/<main>/<secondary>/<title>')
-def page(main, secondary, title):
+@app.route('/article/<title>')
+def page(title):
     menu = get_menu('root')
-    content = Article.query.filter_by(title=title).all()
+    content = Article.query.filter_by(title=title).first()
     news = Article.query.filter_by(main=main, secondary=secondary).all()
     return render_template('page.html', menu=menu, content=content, news=news, title=secondary, parent=main)
 

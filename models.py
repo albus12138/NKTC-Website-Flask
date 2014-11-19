@@ -25,6 +25,16 @@ class Menu(db.Model):
         self.name = name
         self.parent = parent
 
+    @classmethod
+    def query_all(cls):
+        from flask import g
+        user = g.user
+        menus = []
+        for menu in cls.query.order_by(Menu.name.asc()).all():
+            if user.is_admin or menu.name == user.permission:
+                menus.append(menu)
+        return menus
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -40,6 +50,10 @@ class User(db.Model):
     def otp_auth(self):
         from otpauth import OtpAuth
         return OtpAuth(self.otp_token)
+
+    @property
+    def is_admin(self):
+        return self.id == 1 or self.permission == 'admin'
 
     def save(self):
         db.session.add(self)
@@ -73,17 +87,18 @@ class Article(db.Model):
 
     date = db.Column(db.DateTime(), default=datetime.now())
 
-    secondary_id = db.Column(
-        db.Integer,
-        db.ForeignKey('menu.id'), index=True, nullable=False,
-    )
-    secondary = db.relationship("Menu")
-
 #    main_id = db.Column(
 #        db.Integer,
 #        db.ForeignKey('menu.id'), index=True, nullable=False,
 #    )
 #    main = db.relationship(Menu)
+    main = db.Column(db.String(20))
+
+    secondary_id = db.Column(
+        db.Integer,
+        db.ForeignKey('menu.id'), index=True, nullable=False,
+    )
+    secondary = db.relationship("Menu")
 
     def save(self):
         db.session.add(self)

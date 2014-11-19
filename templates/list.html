@@ -1,24 +1,12 @@
-<!doctype html>
-<html lang="ch-hanz">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ parent }} - {{ title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}"/>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-theme.css') }}"/>
-    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}"/>
-    <!--[if lt IE 9]>
-    <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-    <script src="http://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-</head>
-<body>
-<div class="container">
+{% extends "layout.html" %}
+
+{% block title %}{{ parent }} - {{ title }}{% endblock %}
+
+{% block header %}
     <div class="row">
-        <div class="col-xs-12 header">
-            <img src="../staticimg/logo.png" width="100%" class="hidden-lg hidden-md"/>
-            <img src="../staticimg/logo-small.png" width="100%" class="hidden-sm hidden-xs"/>
+        <div class="col-xs-12">
+            <img src="{{ url_for('static', filename='logo.png') }}" width="100%" class="hidden-lg hidden-md"/>
+            <img src="{{ url_for('static', filename='logo-small.png') }}" width="100%" class="hidden-sm hidden-xs"/>
         </div>
     </div>
     <nav class="navbar navbar-default">
@@ -34,19 +22,22 @@
             <ul class="nav navbar-nav">
 
             <!-- 主菜单 -->
-                {% for item in main_menu %}
+                {% for item in menu %}
                     {% if item.name == parent %}
-                        <li class="active"><a href="{{ url_for('index') }}">{{ item.name }}</a></li>
+                        <li class="active"><a href="#">{{ item.name }}</a></li>
+                    {% elif item.name == '首页' %}
+                        <li><a href="{{ url_for('index') }}">首页</a></li>
                     {% else %}
-                        <li><a href="{{ url_for('list', name=item.name) }}">{{ item.name }}</a></li>
+                        <li><a href="{{ url_for('list', name=item.name, title='miao') }}">{{ item.name }}</a></li> <!-- TODO:title传入值 -->
                     {% endif %}
                 {% endfor %}
 
             </ul>
         </div>
     </nav>
-</div>
+{% endblock %}
 
+{% block content %}
 <div class="container">
     <ol class="breadcrumb">
         <li><a href="{{ url_for('index') }}">首页</a></li>
@@ -58,7 +49,7 @@
             <div class="list-group">
 
             <!-- 次级菜单 -->
-            {% for item in secondary_menu %}
+            {% for item in list %}
                 {% if item.name == title %}
                     <a href="{{ url_for('list', name=item.parent, title=item.name) }}" class="list-group-item active">
                         {{ item.name }}
@@ -81,7 +72,7 @@
 
                     <!-- 最新动态 -->
                     {% for item in news %}
-                        <li><a href="{{ url_for('page', main=parent, secondary=title, title=item.title) }}">{{ item.title }}</a> <span class="time pull-right">{{ item.date }}</span></li>
+                        <li><a href="{{ url_for('page', title=item.title) }}">{{ item.title }}</a> <span class="time pull-right">{{ item.date }}</span></li>
                     {% endfor %}
 
                     </ul>
@@ -90,47 +81,4 @@
         </div>
     </div>
 </div>
-
-<!-- 静态部分 -->
-<div class="container footer">
-    <div class="row">
-        <div class="col-sm-3 col-xs-6">
-            <h4><strong>关注我们</strong></h4>
-            <ul class="list-unstyled contactus-list">
-                <li>腾讯微博</li>
-                <li>新浪微博</li>
-                <li>人人公共主页</li>
-            </ul>
-        </div>
-        <div class="col-sm-3 col-xs-6">
-            <h4><strong>关注我们</strong></h4>
-            <ul class="list-unstyled contactus-list">
-                <li>腾讯微博</li>
-                <li>新浪微博</li>
-                <li>人人公共主页</li>
-            </ul>
-        </div>
-        <div class="col-sm-3 col-xs-6">
-            <h4><strong>关注我们</strong></h4>
-            <ul class="list-unstyled contactus-list">
-                <li>腾讯微博</li>
-                <li>新浪微博</li>
-                <li>人人公共主页</li>
-            </ul>
-        </div>
-        <div class="col-sm-3 col-xs-6">
-            <h4><strong>关注我们</strong></h4>
-            <ul class="list-unstyled contactus-list">
-                <li>腾讯微博</li>
-                <li>新浪微博</li>
-                <li>人人公共主页</li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<script src="http://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
-<script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
-<script src="{{ url_for('static', filename='holder.js') }}"></script>
-</body>
-</html>
+{% endblock %}

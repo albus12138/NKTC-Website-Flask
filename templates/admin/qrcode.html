@@ -1,0 +1,8 @@
+<h1>快..来扫人家</h1>
+<script src="http://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/qrcode.min.js') }}"></script>
+<div id="qrcode"></div>
+<script>
+    var qrcode = new QRCode("qrcode");
+    qrcode.makeCode("{{ otop }}");
+</script>

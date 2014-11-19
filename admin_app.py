@@ -51,7 +51,7 @@ class LoginForm(Form):
 
 
 class CreateArticleForm(Form):
-    secondary = (
+    secondary = QuerySelectField(
         "要...发到哪里",
         validators=[Required()],
         query_factory=Menu.query_all,  # TODO: 所有parent不为'root'的菜单项，如果permission != 'admin'，不显示这一项
@@ -64,8 +64,8 @@ class CreateArticleForm(Form):
     ])
     text = TextAreaField("正文", validators=[Required()])
 
-    def create(self, title, text, secondary):
-        article = Article(title, text, secondary)
+    def create(self):
+        article = Article(**self.data)
         return article.save()
 
 
@@ -73,6 +73,8 @@ app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 db.init_app(app)
 db.app = app
+from flask_debugtoolbar import DebugToolbarExtension
+DebugToolbarExtension(app)
 
 
 @app.before_request
@@ -146,9 +148,9 @@ def admin_list():
     return render_template('admin/list.html', main_menu=main_menu, secondary_menu=secondary_menu)
 
 
-@app.route("/;ist-del/<uid>")
+@app.route("/list-del/<uid>")
 @root_required
-def del_slider(uid):
+def del_list(uid):
     list = Menu.query.filter_by(id=uid).first()
     db.session.delete(list)
     db.session.commit()
@@ -191,11 +193,10 @@ def admin_user():
         return redirect(url_for('admin_user'))
 
     if request.method == "GET":
-        user = User.query.all()
-        return render_template('admin/user.html', user=user)
+        return render_template('admin/user.html', users=User.query.all())
 
 
-@app.route("/user-del/<uid>")
+@app.route("/user/<uid>/del")
 @root_required
 def del_user(uid):
     user = User.query.filter_by(id=uid).first()
@@ -204,7 +205,7 @@ def del_user(uid):
     return redirect(url_for('admin_user'))
 
 
-@app.route("/user-add", methods=["GET", "POST"])
+@app.route("/user/add", methods=["GET", "POST"])
 @root_required
 def add_user():
     if request.method == "POST":
@@ -221,9 +222,10 @@ def add_user():
         user.nickname = request.form['nickname']
         user.password = request.form['password']
         user.permission = request.form['permission']
+        otop = user.regenerate_otp_token()
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for('admin_user'))
+        return render_template("admin/qrcode.html", otop=otop)
 
     if request.method == "GET":
         return render_template('admin/add-user.html')
@@ -233,11 +235,11 @@ def add_user():
 @app.route("/article")
 @login_required
 def admin_article_list():
-    article = Article.query.ilter_by(secondary=g.user.permission).order_by("-id").all()
+    article = Article.query.order_by("-id").all()
     return render_template('admin/article-list.html', article=article)
 
 
-@app.route("/article-add")
+@app.route("/article/add", methods=["GET", "POST"])
 @login_required
 def add_article():
     form = CreateArticleForm()
@@ -247,7 +249,7 @@ def add_article():
     return render_template("admin/add_article.html", form=form)
 
 
-@app.route("/article-edit/<uid>")
+@app.route("/article/<int:uid>")
 @login_required
 def article_edit(uid):
     article = Article.query.filter_by(id=uid).first()
@@ -258,7 +260,7 @@ def article_edit(uid):
         return abort(401)
 
 
-@app.route("/article-del/<uid>")
+@app.route("/article/<int:uid>/del")
 @login_required
 def article_del(uid):
     article = Article.query.filter_by(id=uid).first()
@@ -273,7 +275,7 @@ def article_del(uid):
 ########################################################################################################################
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('page_not_found.html'), 404
+    return redirect("http://whouz.com")
 
 
 @app.errorhandler(401)
@@ -282,4 +284,4 @@ def no_permission(error):
 
 
 if __name__ == '__main__':
-    app.run(port=80, debug=True)
+    app.run(port=5000, debug=True)
