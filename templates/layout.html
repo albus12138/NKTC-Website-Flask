@@ -9,29 +9,67 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/medium-editor.min.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/default.min.css') }}"/>
-    {% block head %}
-    {% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}"/>
+    {% block head %}{% endblock %}
 </head>
 <body>
 <div class="container">
     {% block header %}{% endblock %}
+    {% block slider %}{% endblock %}
     <div class="row">
         {% block content %}{% endblock %}
     </div>
 </div>
-
-{% block footer %}{% endblock %}
-
+<div class="container footer">
+    <div class="row">
+        <div class="col-sm-3 col-xs-6">
+            <h4><strong>关注我们</strong></h4>
+            <ul class="list-unstyled contactus-list">
+                <li>腾讯微博</li>
+                <li>新浪微博</li>
+                <li>人人公共主页</li>
+            </ul>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+            <h4><strong>关注我们</strong></h4>
+            <ul class="list-unstyled contactus-list">
+                <li>腾讯微博</li>
+                <li>新浪微博</li>
+                <li>人人公共主页</li>
+            </ul>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+            <h4><strong>关注我们</strong></h4>
+            <ul class="list-unstyled contactus-list">
+                <li>腾讯微博</li>
+                <li>新浪微博</li>
+                <li>人人公共主页</li>
+            </ul>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+            <h4><strong>关注我们</strong></h4>
+            <ul class="list-unstyled contactus-list">
+                <li>腾讯微博</li>
+                <li>新浪微博</li>
+                <li>人人公共主页</li>
+            </ul>
+        </div>
+    </div>
+</div>
 <div class="container copyright">
     <div class="row">
         <div class="col-xs-12">
                 <p class="text-center">津ICP备14004209号-3</p>
-                <div class="col-xs-6"><p>Powered by NKTC网络部</p></div>
-                <div class="col-xs-6 text-right"><p>Copyright © 2012 - 2014 NKTC. All Rights Reserved</p></div>
+                <div class="col-xs-6">
+                    <p>Powered by</p>
+                    <ul>南开中学体验创意中心协会网络部</ul>
+                    <ul>天津市憬炼科技发展有限公司</ul>
+                </div>
+                <div class="col-xs-6 text-right"><br/><p>Copyright © 2012 - 2014 NKTC. All Rights Reserved</p></div>
         </div>
     </div>
 </div>
-<script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/holder.js') }}"></script>
 {% block script %}

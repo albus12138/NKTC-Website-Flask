@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %}  <!-- TODO: 卧槽。。为什么比别的页大一圈。。-->
 
 {% block title %}{{ parent }} - {{ title }}{% endblock %}
 
@@ -16,7 +16,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="#" class="navbar-brand"><strong>NKTRY</strong></a>
+            <a class="navbar-brand"><strong>NKTRY</strong></a>
         </div>
         <div class="collapse navbar-collapse" id="responsive-navbar">
             <ul class="nav navbar-nav">
@@ -52,17 +52,33 @@
                 <div class="col-xs-12 text-center">
                     <h3 >{{ content.title }}</h3>
                     <h5 class="text-info inline-block page-vicetitle">{{ content.date }}</h5>
-                    <h5 class="text-info inline-block page-vicetitle">编辑：{{ content.author }}</h5>
-                    <h5 class="text-info inline-block page-vicetitle">分享到</h5>   <!-- TODO share插件-->
+                    <h5 class="text-info inline-block page-vicetitle">编辑：{{ content.author.name }}</h5>
+                    <h5 class="text-info inline-block page-vicetitle">分享到</h5>   <!-- TODO: share插件-->
                 </div>
                 <div class="col-xs-12 page-content">
-                    <p>{{ content.text }}</p>
+                    {{ content.text }}  <!-- TODO: 作为代码输出-->
                 </div>
                 <div class="col-xs-12">
-                    <h5 class="page-share">分享到</h5>  <!-- TODO share插件-->
+                    <h5 class="page-share">分享到</h5>
                 </div>
                 <div class="col-xs-12">
-                    <!-- TODO 评论区-->
+                    <!-- 多说评论框 start -->
+                    <div class="ds-thread" data-thread-key="{{ content.id }}" data-title="{{ content.title }}" data-url="{{ url_for('page', title=content.title) }}"></div>
+                    <!-- 多说评论框 end -->
+                    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+                    <script type="text/javascript">
+                    var duoshuoQuery = {short_name:"nktry2014"};
+                        (function() {
+                            var ds = document.createElement('script');
+                            ds.type = 'text/javascript';ds.async = true;
+                            ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                            ds.charset = 'UTF-8';
+                            (document.getElementsByTagName('head')[0]
+                             || document.getElementsByTagName('body')[0]).appendChild(ds);
+                        })();
+                        </script>
+                    <!-- 多说公共JS代码 end -->
+
                 </div>
 
             </div>

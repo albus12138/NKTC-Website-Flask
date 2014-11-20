@@ -16,7 +16,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="#" class="navbar-brand"><strong>NKTRY</strong></a>
+            <a class="navbar-brand"><strong>NKTRY</strong></a>
         </div>
         <div class="collapse navbar-collapse" id="responsive-navbar">
             <ul class="nav navbar-nav">
@@ -35,37 +35,30 @@
     </nav>
 {% endblock %}
 
-{% block silder %}
+{% block slider %}
     <div class="carousel slide" data-ride="carousel" id="slideshow" data-interval="3000">
         <ol class="carousel-indicators">
-
-        <!-- 跑马灯按钮【我知道写的太蛋疼。。你改下，主要是因为我不知道怎么查元组索引。。】 -->
+            {% set a = 0 %}
             {% for item in showcase %}
-                {% if showcase[0] == item %}
+                {% if a == 0 %}
                     <li data-target="#slideshow" data-slide-to="0" class="active"></li>
-                {% elif showcase[1] == item %}
-                    <li data-target="#slideshow" data-slide-to="1"></li>
-                {% elif showcase[2] == item %}
-                    <li data-target="#slideshow" data-slide-to="2"></li>
-                {% elif showcase[3] == item %}
-                    <li data-target="#slideshow" data-slide-to="3"></li>
-                {% elif showcase[4] == item %}
-                    <li data-target="#slideshow" data-slide-to="4"></li>
+                {% else %}
+                    <li data-target="#slideshow" data-slide-to="{{ a }}"></li>
                 {% endif %}
+                {% set a = a + 1 %}
             {% endfor %}
-
         </ol>
         <div class="carousel-inner">
 
         <!-- 跑马灯图片&文字 -->
             {% for item in showcase %}
-                {% if shocase[0] == item %}
+                {% if showcase[0] == item %}
                     <div class="item active">
-                        <img src="img/{{ item.img }}" alt="#"/>
+                        <img src="{{ url_for('static', filename="img/%s" % item.img) }}" alt="{{ item.text }}"/>
                     </div>
                 {% else %}
                     <div class="item">
-                        <img src="img/{{ item.img }}" alt="#"/>
+                        <img src="{{ url_for('static', filename="img/%s" % item.img) }}" alt="{{ item.text }}"/>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -166,46 +159,6 @@
             {% endif %}
         {% endfor %}
 
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block footer %}
-<!-- 静态部分 -->
-<div class="container footer">
-    <div class="row">
-        <div class="col-sm-3 col-xs-6">
-            <h4><strong>关注我们</strong></h4>
-            <ul class="list-unstyled contactus-list">
-                <li>腾讯微博</li>
-                <li>新浪微博</li>
-                <li>人人公共主页</li>
-            </ul>
-        </div>
-        <div class="col-sm-3 col-xs-6">
-            <h4><strong>关注我们</strong></h4>
-            <ul class="list-unstyled contactus-list">
-                <li>腾讯微博</li>
-                <li>新浪微博</li>
-                <li>人人公共主页</li>
-            </ul>
-        </div>
-        <div class="col-sm-3 col-xs-6">
-            <h4><strong>关注我们</strong></h4>
-            <ul class="list-unstyled contactus-list">
-                <li>腾讯微博</li>
-                <li>新浪微博</li>
-                <li>人人公共主页</li>
-            </ul>
-        </div>
-        <div class="col-sm-3 col-xs-6">
-            <h4><strong>关注我们</strong></h4>
-            <ul class="list-unstyled contactus-list">
-                <li>腾讯微博</li>
-                <li>新浪微博</li>
-                <li>人人公共主页</li>
-            </ul>
         </div>
     </div>
 </div>

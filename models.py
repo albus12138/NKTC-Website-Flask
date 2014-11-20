@@ -85,7 +85,7 @@ class Article(db.Model):
     )
     author = db.relationship("User")
 
-    date = db.Column(db.DateTime(), default=datetime.now())
+    date = db.Column(db.DateTime(), default=datetime.now()) # TODO: 时间格式！！！
 
 #    main_id = db.Column(
 #        db.Integer,

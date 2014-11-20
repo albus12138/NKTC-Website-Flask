@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import functools
 import os
 
-from flask import Flask, request, session, render_template, redirect, g, url_for, abort
+from flask import Flask, request, session, render_template, redirect, g, url_for, abort, jsonify
 from models import db, User, Menu, Showcase, Article
 from config import Config, DevelopmentConfig
 from wtforms import TextField, TextAreaField
@@ -130,11 +130,16 @@ def login():
 @app.route('/upload/image', methods=['POST'])
 @login_required
 def upload_file():
-    file = request.files['file']
+    import uuid
+    file = request.files['upload_file']
     if file:
-        filename = file.filename  # TODO: unsafe
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return url_for("static", fiename="upload/%s" % filename)
+        filename = "".join([str(uuid.uuid4()), ".", file.filename.split(".")[-1]])
+        file.save(os.path.join(app.root_path, "static", app.config['UPLOAD_FOLDER'], filename))
+        return jsonify(
+            success=True,
+            msg="呵呵",
+            file_path=url_for("static", filename="%s/%s" % (app.config["UPLOAD_FOLDER"] ,filename))
+        )
 
 
 ########################################################################################################################
@@ -280,7 +285,7 @@ def page_not_found(error):
 
 @app.errorhandler(401)
 def no_permission(error):
-    return render_template('no_permission.html'), 401
+    return redirect("http://whouz.com")
 
 
 if __name__ == '__main__':

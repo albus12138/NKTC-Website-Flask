@@ -24,7 +24,7 @@ def get_menu(name):
 @app.route('/')
 def index():
     menu = get_menu('root')
-    showcase = Showcase.query.order_by("-id").limit(5)
+    showcase = Showcase.query.all()
     news_1 = Article.query.filter_by(main="NKTC").order_by("-date")
     news_2 = Article.query.filter_by(main=u'学生会').order_by("-date")
     news_3 = Article.query.filter_by(main=u'社团活动').order_by("-date")
@@ -45,8 +45,8 @@ def list(name, title):
 def page(title):
     menu = get_menu('root')
     content = Article.query.filter_by(title=title).first()
-    news = Article.query.filter_by(main=main, secondary=secondary).all()
-    return render_template('page.html', menu=menu, content=content, news=news, title=secondary, parent=main)
+    news = Article.query.filter_by( secondary=content.secondary).all()
+    return render_template('page.html', menu=menu, content=content, news=news, title=content.secondary.name, parent=content.secondary.parent)
 
 
 if __name__ == '__main__':

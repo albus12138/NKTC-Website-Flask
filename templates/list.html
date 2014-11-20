@@ -16,7 +16,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="#" class="navbar-brand"><strong>NKTRY</strong></a>
+            <a class="navbar-brand"><strong>NKTRY</strong></a>
         </div>
         <div class="collapse navbar-collapse" id="responsive-navbar">
             <ul class="nav navbar-nav">
@@ -64,7 +64,7 @@
         <div class="col-sm-9">
             <div class="row">
                 <div class="col-xs-12 list-img">
-                    <img src="img/List_{{ parent }}_{{ title }}.jpg " alt="" class="img-thumbnail inline-block"/>
+                    <img src="{{ url_for('static', filename="img/List_"+parent+"_"+title+".png") }}" alt="" class="img-thumbnail inline-block"/>
                 </div>
                 <div class="col-sm-8 col-xs-12 hr">
                     <h4 class="text-center">最新动态</h4>
