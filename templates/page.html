@@ -1,12 +1,12 @@
-{% extends "layout.html" %}  <!-- TODO: 卧槽。。为什么比别的页大一圈。。-->
+{% extends "layout.html" %}
 
 {% block title %}{{ parent }} - {{ title }}{% endblock %}
 
-{% block content %}
+{% block header %}
     <div class="row">
-        <div class="col-xs-12 header">
-            <img src="../static/img/logo.png" width="100%" class="hidden-lg hidden-md"/>
-            <img src="../static/img/logo-small.png" width="100%" class="hidden-sm hidden-xs"/>
+        <div class="col-xs-12">
+            <img src="{{ url_for('static', filename='logo.png') }}" width="100%" class="hidden-lg hidden-md"/>
+            <img src="{{ url_for('static', filename='logo-small.png') }}" width="100%" class="hidden-sm hidden-xs"/>
         </div>
     </div>
     <nav class="navbar navbar-default">
@@ -35,9 +35,9 @@
             </ul>
         </div>
     </nav>
-</div>
+{% endblock %}
 
-
+{% block content %}
 <div class="container">
     <ol class="breadcrumb">
         <li><a href="{{ url_for('index') }}">首页</a></li>
@@ -54,12 +54,21 @@
                     <h5 class="text-info inline-block page-vicetitle">{{ content.date }}</h5>
                     <h5 class="text-info inline-block page-vicetitle">编辑：{{ content.author.name }}</h5>
                     <h5 class="text-info inline-block page-vicetitle">分享到</h5>   <!-- TODO: share插件-->
+                    <div class="bdsharebuttonbox inline-block">
+                        <a href="#" class="bds_more" data-cmd="more"></a>
+                        <a title="分享到QQ空间" href="#" class="bds_qzone" data-cmd="qzone"></a>
+                        <a title="分享到新浪微博" href="#" class="bds_tsina" data-cmd="tsina"></a>
+                        <a title="分享到腾讯微博" href="#" class="bds_tqq" data-cmd="tqq"></a>
+                        <a title="分享到人人网" href="#" class="bds_renren" data-cmd="renren"></a>
+                        <a title="分享到微信" href="#" class="bds_weixin" data-cmd="weixin"></a>
+                    </div>
+                    <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
                 </div>
                 <div class="col-xs-12 page-content">
                     {{ content.text }}  <!-- TODO: 作为代码输出-->
                 </div>
                 <div class="col-xs-12">
-                    <h5 class="page-share">分享到</h5>
+                    <h5 class="page-share"> </h5>
                 </div>
                 <div class="col-xs-12">
                     <!-- 多说评论框 start -->
@@ -89,7 +98,7 @@
             <ul class="list-unstyled">
 
             {% for item in news %}
-                <li><a href="{{ url_for('page', main=parent, secondary=title, title=content.title) }}">{{ content.title }}</a></li>
+                <li><a href="{{ url_for('page', main=parent, secondary=title, title=item.title) }}">{{ item.title }}</a></li>
             {% endfor %}
                 
             </ul>

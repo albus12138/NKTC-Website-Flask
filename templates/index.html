@@ -26,7 +26,7 @@
                     {% if item.name == '首页' %}
                         <li class="active"><a href="{{ url_for('index') }}">首页</a></li>
                     {% else %}
-                        <li><a href="{{ url_for('list', name=item.name, title='miao') }}">{{ item.name }}</a></li>
+                        <li><a href="{{ url_for('list', name=item.name, title='miao') }}">{{ item.name }}</a></li> <!--TODO:title-->
                     {% endif %}
                 {% endfor %}
 
