@@ -28,7 +28,7 @@
                     {% elif item.name == '首页' %}
                         <li><a href="{{ url_for('index') }}">首页</a></li>
                     {% else %}
-                        <li><a href="{{ url_for('list', name=item.name, title='miao') }}">{{ item.name }}</a></li> <!-- TODO:title传入值 -->
+                        <li><a href="{{ url_for('list', name=item.name, title='root') }}">{{ item.name }}</a></li>
                     {% endif %}
                 {% endfor %}
 

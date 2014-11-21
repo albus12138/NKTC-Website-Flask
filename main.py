@@ -1,13 +1,13 @@
-#-*- coding:utf-8  -*-
+# -*- coding:utf-8  -*-
 
-from flask import Flask, render_template, flash, request, session, redirect, url_for
-from datetime import  datetime
+from flask import Flask, render_template, redirect, url_for
 
-from models import Menu, Article, User, Showcase, db
-from config import Config, DevelopmentConfig
+from models import Menu, Article, Showcase, db
+from config import DevelopmentConfig
+# from config import Config
 
 
-#config
+# config
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 db.init_app(app)
@@ -15,12 +15,14 @@ db.app = app
 from flask_debugtoolbar import DebugToolbarExtension
 DebugToolbarExtension(app)
 
-#Function
+
+# Function
 def get_menu(name):
     menu = Menu.query.filter_by(parent=name).all()
     return menu
 
-#Flask
+
+# Flask
 @app.route('/')
 def index():
     menu = get_menu('root')
@@ -33,9 +35,10 @@ def index():
 
 @app.route('/category/<name>/<title>')
 def list(name, title):
-    if title is 'root':
+    if title == 'root':
         x = get_menu(name)
         title = x[0]
+        return redirect(url_for('list', name=name, title=title.name))
     main_menu = get_menu('root')
     secondary = Menu.query.filter_by(name=title).first()
     secondary_menu = get_menu(name)
@@ -55,4 +58,4 @@ def page(title):
 
 
 if __name__ == '__main__':
-    app.run(port=80, debug=True)
+    app.run(host="127.0.0.1", port=5050, debug=True)
