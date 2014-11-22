@@ -14,6 +14,7 @@ from wtforms.validators import Required, Optional, Length
 from flask_wtf import Form
 from wtforms import TextField, PasswordField
 from wtforms.validators import DataRequired
+from sanitize import HTML
 
 
 class LoginForm(Form):
@@ -62,7 +63,7 @@ class CreateArticleForm(Form):
         Required(),
         Length(max=100)
     ])
-    text = TextAreaField("正文", validators=[Required()])
+    text = HTML(TextAreaField("正文", validators=[Required()])) # TODO: 不确定对不对
 
     def create(self):
         article = Article(**self.data)

@@ -1,4 +1,4 @@
-#coding: utf-8
+# coding: utf-8
 
 from flask import g
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -12,7 +12,7 @@ def _get_author_id():
 
 
 class Menu(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
 #    parent_id = db.Column(
 #        db.Integer,

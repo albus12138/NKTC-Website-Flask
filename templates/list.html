@@ -41,7 +41,7 @@
 <div class="container">
     <ol class="breadcrumb">
         <li><a href="{{ url_for('index') }}">首页</a></li>
-        <li class="active">{{ parent }}</li>
+        <li><a href="{{ url_for('list', name=parent, title='root') }}">{{ parent }}</a></li>
         <li class="active">{{ title }}</li>
     </ol>
     <div class="row">
