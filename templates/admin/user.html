@@ -1,4 +1,4 @@
-{% extends "layout_admin.html" %}
+{% extends "admin/layout_admin.html" %}
 
 {% block title %}NKTC管理中心-用户管理{% endblock %}
 
@@ -19,6 +19,7 @@
 
 {% block content %}
 <div class="container" style="margin-top:20px;">
+
 	<div class="row">
 		<div class="col-xs-1 text-center">#</div>
 		<div class="col-xs-2 text-center">用户名</div>
@@ -26,44 +27,44 @@
 		<div class="col-xs-4 text-center">权限</div>
 		<div class="col-xs-2 text-center">操作</div>
 	</div>
-    {% for user in users %}
+	{% for item in users %}
 	<div class="row">
-		<div class="col-xs-1 text-center">{{ user.id }}</div>
-		<div class="col-xs-2 text-center">{{ user.name }}</div>
-		<div class="col-xs-3 text-center">暂无数据</div>
+		<div class="col-xs-1 text-center">{{ item.id }}</div>
+		<div class="col-xs-2 text-center">{{ item.name }}</div>
+		<div class="col-xs-3 text-center">暂无</div>
 		<div class="col-xs-4 text-center">
-            {% if user.permission == 'admin' %}
-                <label class="checkbox-inline">
-                    <input type="checkbox" value="list" disabled checked>菜单
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" value="user" disabled checked>用户
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" value="slider" disabled checked>专题
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" value="article" disabled checked>文章
-                </label>
-            {% else %}
-                <label class="checkbox-inline">
-                    <input type="checkbox" value="list" disabled>菜单
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" value="user" disabled>用户
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" value="slider" disabled>专题
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" value="article" disabled checked>文章
-                </label>
-            {% endif %}
+        {% if item.permission == 'admin' %}
+            <label class="checkbox-inline">
+                <input type="checkbox" value="list" disabled checked>菜单
+            </label>
+            <label class="checkbox-inline">
+                <input type="checkbox" value="user" disabled checked>用户
+            </label>
+            <label class="checkbox-inline">
+                <input type="checkbox" value="slider" disabled checked>专题
+            </label>
+            <label class="checkbox-inline">
+                <input type="checkbox" value="article" disabled checked>文章
+            </label>
+        {% else %}
+            <label class="checkbox-inline">
+                <input type="checkbox" value="list" disabled>菜单
+            </label>
+            <label class="checkbox-inline">
+                <input type="checkbox" value="user" disabled>用户
+            </label>
+            <label class="checkbox-inline">
+                <input type="checkbox" value="slider" disabled>专题
+            </label>
+            <label class="checkbox-inline">
+                <input type="checkbox" value="article" disabled checked>文章
+            </label>
+        {% endif %}
         </div>
 		<div class="col-xs-2 text-center">
 			<div class="btn-group btn-group-xs">
-				<button type="button" class="btn btn-success" data-toggle="modal" data-target="#edit">编辑</button>
-				<button type="button" class="btn btn-danger" action="del" uid="{{ user.id }}">删除</button>
+				<button type="button" class="btn btn-success" data-toggle="modal" data-target="#edit" data-uid="{{ item.id }}">编辑</button>
+				<button type="button" class="btn btn-danger disabled" action="del" uid="{{ item.id }}">删除</button>
 			</div>
 		</div>
 	</div>
@@ -75,39 +76,49 @@
         </div>
     </div>
 </div>
-{% set user = users[0] %}
+
 <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">编辑 {{ user.name }} 的信息</h4>
+                <h4 class="modal-title" id="myModalLabel">编辑{XXX用户}的信息</h4>
             </div>
             <div class="modal-body">
-                <form id="updata-user" action="{{ url_for('admin_user') }}" method="POST">
+                <form id="updata-user">
                     <!--隐藏域 用于保存用户的UID值 提交到后台后 需要鉴权-->
-                    <input type="hidden" name="uid" value="{{ user.id }}">
+                    <input type="hidden" name="uid" value="1" class="uid">
                     <!--用户名-->
                     <div class="input-group">
                         <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
-                        <input type="text" class="form-control" name="username" value="{{ user.name }}">
+                        <input type="text" class="form-control username" name="username">
                     </div>
                     <!--前台显示作者-->
                     <div class="input-group">
                         <span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
-                        <input type="text" class="form-control" name="nickname" value="{{ user.nickname }}">
+                        <input type="text" class="form-control nickname" name="nickname">
                     </div>
                     <!--密码-->
                     <div class="input-group">
                         <span class="glyphicon glyphicon-lock input-group-addon" aria-hidden="true"></span>
                         <input type="text" class="form-control" name="password" placeholder="如果需要重置密码请填写新密码，否则请留空">
                     </div>
-					<!--权限-->
-                    <div class="input-group">
-                        <span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
-                        <input type="text" class="form-control" name="permission" value="{{ user.permission }}">
-                    </div>
 
+                    <div class="input-group">
+                        <span>权限管理：</span>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="func" value="list">菜单
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="func" value="user">用户
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="func" value="slider">专题
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="func" value="article">文章
+                        </label>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -117,29 +128,76 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block script %}
 <script>
-    //更新逻辑开始
-    $("#updata").click(function(){
-        $("#updata-user").sumbit();
-    });
-    //更新逻辑结束
+    //更新弹出逻辑开始
+    $('#edit').on('show.bs.modal',function(event){
+        var button = $(event.relatedTarget)
+        var uid = button.data('uid')
+        var modal = $(this)
+        $.get("/user/"+uid+"/detail",{'uid':uid},function(data){//修改user_detail.page为获取用户信息的页面
+                                                           //返回用户信息 要求字段:username,nickname,func
+                                                          //格式{"username":"zly","nickname":"ilovexhy","func":"list,user,article"}
+            if(data!=0){
+                var json = $.parseJSON(data);
+                var username = json['username'];
+                var nickname = json['nickname'];
+                var func = json['func'];
+                var func = func.split(",");
+                $("input[name='func']").each(function(){
+                    if($.inArray(this.getAttribute("value"),func))
+                        $(this).click();
+                });
+                modal.find('.modal-title').text('编辑' + username + "用户的信息");
+                modal.find('.uid').val(uid);
+                modal.find('.username').val(username);
+                modal.find('.nickname').val(nickname);
+            }else{
+                window.alert("获取用户信息失败\n请联系管理员处理");
+            }
+        });
+    })
+    //更新弹出逻辑结束
+    //更新提交逻辑开始
+    $('#updata').on('click', function () {
+        var fun=[];
+        $("input[name='func']").each(function(){
+            if(this.checked)
+                fun.push($(this).val());
+        });
+        var func=new Object;
+        func.name="func";
+        func.value=fun.toString();
+        var updata_data = $("input[type='text']").serializeArray();
+        updata_data.push(func);
+        $.post("user_edit.page",updata_data,function(data){//修改user_edit.page为编辑用户提交的页面
+            if(data==0){
+                $('#edit').modal('hide');
+                location.reload();
+            }else{
+                window.alert("更新失败，错误原因为："+data+"\n请联系管理员处理");
+           }
+        });
+    })
+    //更新提交逻辑结束
 
-    //删除逻辑开始     !提交到后台后 需要鉴权!
+    //删除逻辑开始
     $("[action='del']").on('click',function(){
         var uid=this.getAttribute("uid");
-        $.get("/user/"+uid+"/del");//修改user_del.page为删除用户提交的页面
-        location.reload();
+        $.get("user_del.page",{'uid':uid},function(data){//修改user_del.page为删除用户提交的页面
+            if(data==0){
+                location.reload();
+            }else{
+                window.alert("删除失败，错误原因为："+data+"\n请联系管理员处理");
+            }
+        });
     })
-    //删除逻辑结束 
-
-    //添加逻辑开始
+    //删除逻辑结束
+    //添加按钮逻辑
     $("#add-user").on('click',function(){
-        location.href ="{{ url_for('add_user') }}";
+        location.href ="admin-user-new.html";
     })
-    //添加逻辑结束
 </script>
 {% endblock %}

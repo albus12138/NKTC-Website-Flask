@@ -1,4 +1,4 @@
-#coding: utf-8
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 import functools
@@ -63,7 +63,7 @@ class CreateArticleForm(Form):
         Required(),
         Length(max=100)
     ])
-    text = HTML(TextAreaField("正文", validators=[Required()])) # TODO: 不确定对不对
+    text = TextAreaField("正文", validators=[Required()])  # TODO: 验证内容合法性 HTML()
 
     def create(self):
         article = Article(**self.data)
@@ -235,6 +235,12 @@ def add_user():
 
     if request.method == "GET":
         return render_template('admin/add-user.html')
+
+
+@app.route("/user/<uid>/detail")
+@root_required
+def user_detail(uid):
+    pass
 
 
 ########################################################################################################################
