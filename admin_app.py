@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import functools
 import os
+import json
 
 from flask import Flask, request, session, render_template, redirect, g, url_for, abort, jsonify
 from models import db, User, Menu, Showcase, Article
@@ -10,6 +11,7 @@ from config import Config, DevelopmentConfig
 from wtforms import TextField, TextAreaField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import Required, Optional, Length
+from datetime import datetime
 
 from flask_wtf import Form
 from wtforms import TextField, PasswordField
@@ -53,9 +55,9 @@ class LoginForm(Form):
 
 class CreateArticleForm(Form):
     secondary = QuerySelectField(
-        "要...发到哪里",
+        "文章所属分类",
         validators=[Required()],
-        query_factory=Menu.query_all,  # TODO: 所有parent不为'root'的菜单项，如果permission != 'admin'，不显示这一项
+        query_factory=Menu.query_all,  # TODO: 如果permission != 'admin'，不显示这一项，显示parent != 'root'的菜单
         get_pk=lambda a: a.id,
         get_label=lambda a: a.name
     )
@@ -237,10 +239,14 @@ def add_user():
         return render_template('admin/add-user.html')
 
 
-@app.route("/user/<uid>/detail")
+@app.route("/user/<uid>/detail", methods=['GET', 'POST'])
 @root_required
 def user_detail(uid):
-    pass
+    if request.method == 'GET':
+        user = User.query.filter_by(id=uid).first()
+        dic = {'username': user.name, 'nickname': user.nickname, 'password': user.password, 'permission': user.permission}
+        return json.dumps(dic)
+    else:
 
 
 ########################################################################################################################
@@ -248,6 +254,8 @@ def user_detail(uid):
 @login_required
 def admin_article_list():
     article = Article.query.order_by("-id").all()
+    for item in article:
+        item.date = item.date.strftime("%Y-%m-%d %X")
     return render_template('admin/article-list.html', article=article)
 
 
@@ -261,22 +269,37 @@ def add_article():
     return render_template("admin/add_article.html", form=form)
 
 
-@app.route("/article/<int:uid>")
+@app.route("/article/<int:uid>", methods=['GET', 'POST'])
 @login_required
 def article_edit(uid):
     article = Article.query.filter_by(id=uid).first()
-    if g.user.permission == article.secondary or g.user.permission == 'admin':  # TODO:文章分类
-        form = None  # TODO: 把对应ID文章填入form，返回到编辑器
+    if g.user.permission == article.secondary.name or g.user.permission == 'admin':  # TODO:文章分类
+        form = CreateArticleForm()
+        form.secondary.data = article.secondary
+        form.title.data = article.title
+        form.text.data = article.text
+
+        if form.validate_on_submit():
+            article.title = request.form['title']
+            article.text = request.form['text']
+            ID = int(request.form['secondary'])
+            secondary_new = Menu.query.filter_by(id=ID).first()
+            article.secondary = secondary_new
+            article.date = datetime.now()
+            db.session.add(article)
+            db.session.commit()
+            return redirect("/article")
+
         return render_template('admin/add_article.html', form=form)
     else:
-        return abort(401)
+        return redirect("/article")
 
 
 @app.route("/article/<int:uid>/del")
 @login_required
 def article_del(uid):
     article = Article.query.filter_by(id=uid).first()
-    if g.user.permission == article.secondary or g.user.permission == 'admin':  # TODO:文章分类
+    if g.user.permission == article.secondary.name or g.user.permission == 'admin':  # TODO:文章分类
         db.session.delete(article)
         db.session.commit()
         return 0

@@ -104,20 +104,10 @@
                         <input type="text" class="form-control" name="password" placeholder="如果需要重置密码请填写新密码，否则请留空">
                     </div>
 
+                    <!--权限-->
                     <div class="input-group">
-                        <span>权限管理：</span>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" name="func" value="list">菜单
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" name="func" value="user">用户
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" name="func" value="slider">专题
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" name="func" value="article">文章
-                        </label>
+                        <span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
+                        <input type="text" class="form-control permission" name="permission">
                     </div>
                 </form>
             </div>
@@ -144,22 +134,19 @@
                 var json = $.parseJSON(data);
                 var username = json['username'];
                 var nickname = json['nickname'];
-                var func = json['func'];
-                var func = func.split(",");
-                $("input[name='func']").each(function(){
-                    if($.inArray(this.getAttribute("value"),func))
-                        $(this).click();
-                });
+                var permission = json['permission']
                 modal.find('.modal-title').text('编辑' + username + "用户的信息");
                 modal.find('.uid').val(uid);
                 modal.find('.username').val(username);
                 modal.find('.nickname').val(nickname);
+                modal.find('.permission').val(permission)
             }else{
                 window.alert("获取用户信息失败\n请联系管理员处理");
             }
         });
     })
     //更新弹出逻辑结束
+
     //更新提交逻辑开始
     $('#updata').on('click', function () {
         var fun=[];
@@ -197,7 +184,7 @@
     //删除逻辑结束
     //添加按钮逻辑
     $("#add-user").on('click',function(){
-        location.href ="admin-user-new.html";
+        location.href ="{{ url_for('add_user')}}";
     })
 </script>
 {% endblock %}

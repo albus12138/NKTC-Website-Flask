@@ -37,7 +37,7 @@
             <div class="col-xs-2 text-center">
                 <div class="btn-group btn-group-xs">
                     <button type="button" class="btn btn-success" onClick="window.open('{{ url_for('article_edit', uid=item.id) }}')">编辑</button>
-                    <button type="button" class="btn btn-danger disabled" action="del" url="{{ url_for('article_del', uid=item.id) }}">删除</button>
+                    <button type="button" class="btn btn-danger" action="del" url="{{ url_for('article_del', uid=item.id) }}">删除</button>
                 </div>
             </div>
         </div>

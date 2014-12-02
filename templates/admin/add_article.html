@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}NKTC管理中心-发文章{% endblock %}
+{% block title %}NKTC管理中心-文章内容管理{% endblock %}
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.css') }}"/>
@@ -14,14 +14,15 @@
             <form action="" method="post">
                  {% from "snippet/form.html" import form_field, select_field %}
                 <div class="signal-form">
-                    <header>新建话题</header>
+                    <header>文章内容管理</header>
+                    <hr/>
                     <form method="post" action="">
                         {{ form.csrf_token }}
                         {{ form_field(form.secondary) }}
                         {{ form_field(form.title) }}
                         {{ form_field(form.text) }}
                         <div class="form-controls">
-                            <button type="submit">新建</button>
+                            <button type="submit">提交</button>
                         </div>
                     </form>
                 </div>
