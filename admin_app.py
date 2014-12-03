@@ -181,10 +181,23 @@ def del_slider(uid):
     return redirect(url_for('admin_slider'))
 
 
-@app.route("/slider/<int:uid>/add")
+@app.route("/slider/add", methods=['GET', 'POST'])
 @root_required
-def add_slider(uid):
-    return render_template("admin/add-slider.html")
+def add_slider():
+    if request.method == 'GET':
+        return render_template("admin/add-slider.html")
+
+    if request.method == 'POST':
+        text = request.form['text']
+        img = request.form['img']
+        url = request.form['url']
+        showcase = Showcase()
+        showcase.img = img
+        showcase.text = text
+        showcase.url = url
+        db.session.add(showcase)
+        db.session.commit()
+        return redirect("/slider") #TODO : BUG!!!!!!!!!
 
 
 ########################################################################################################################

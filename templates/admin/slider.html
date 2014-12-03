@@ -108,7 +108,7 @@
     //添加按钮逻辑
     var uid = 1
     $("#add-showcase").on('click',function(){
-        location.href ="/slider/"+uid+"/add";
+        location.href ="{{ url_for('add_slider') }}";
     })
 </script>
 {% endblock %}
