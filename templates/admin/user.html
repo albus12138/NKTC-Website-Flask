@@ -64,7 +64,7 @@
 		<div class="col-xs-2 text-center">
 			<div class="btn-group btn-group-xs">
 				<button type="button" class="btn btn-success" data-toggle="modal" data-target="#edit" data-uid="{{ item.id }}">编辑</button>
-				<button type="button" class="btn btn-danger disabled" action="del" uid="{{ item.id }}">删除</button>
+				<button type="button" class="btn btn-danger" action="del" uid="{{ item.id }}">删除</button>
 			</div>
 		</div>
 	</div>
@@ -174,7 +174,7 @@
     //删除逻辑开始
     $("[action='del']").on('click',function(){
         var uid=this.getAttribute("uid");
-        $.get("user_del.page",{'uid':uid},function(data){//修改user_del.page为删除用户提交的页面
+        $.get("/user/"+uid+"/del",{'uid':uid},function(data){//修改user_del.page为删除用户提交的页面
             if(data==0){
                 location.reload();
             }else{

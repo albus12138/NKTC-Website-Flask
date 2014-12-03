@@ -172,13 +172,19 @@ def admin_slider():
     return render_template('admin/slider.html', showcase=showcase)
 
 
-@app.route("/slider-del/<uid>")
+@app.route("/slider-del/<int:uid>")
 @root_required
 def del_slider(uid):
     slider = Showcase.query.filter_by(id=uid).first()
     db.session.delete(slider)
     db.session.commit()
     return redirect(url_for('admin_slider'))
+
+
+@app.route("/slider/<int:uid>/add")
+@root_required
+def add_slider(uid):
+    return render_template("admin/add-slider.html")
 
 
 ########################################################################################################################
@@ -203,7 +209,7 @@ def admin_user():
         return render_template('admin/user.html', users=User.query.all())
 
 
-@app.route("/user/<uid>/del")
+@app.route("/user/<int:uid>/del")
 @root_required
 def del_user(uid):
     user = User.query.filter_by(id=uid).first()
@@ -246,7 +252,7 @@ def user_detail(uid):
         dic = {'username': user.name, 'nickname': user.nickname, 'password': user.password, 'permission': user.permission}
         return json.dumps(dic)
 
-    if request.method == 'GET':
+    if request.method == 'POST':
         user = User.query.filter_by(id=uid).first()
         user.name = request.form['username']
         user.nickname = request.form['nickname']
@@ -255,6 +261,7 @@ def user_detail(uid):
         user.permission = request.form['permission']
         db.session.add(user)
         db.session.commit()
+        return 0
 
 
 ########################################################################################################################
