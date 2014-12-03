@@ -16,7 +16,6 @@ from datetime import datetime
 from flask_wtf import Form
 from wtforms import TextField, PasswordField
 from wtforms.validators import DataRequired
-from sanitize import HTML
 
 
 class LoginForm(Form):
@@ -65,7 +64,7 @@ class CreateArticleForm(Form):
         Required(),
         Length(max=100)
     ])
-    text = TextAreaField("正文", validators=[Required()])  # TODO: 验证内容合法性 HTML()
+    text = TextAreaField("正文", validators=[Required()])  # TODO: 验证内容合法性 HTML(),sanitize
 
     def create(self):
         article = Article(**self.data)
@@ -239,14 +238,23 @@ def add_user():
         return render_template('admin/add-user.html')
 
 
-@app.route("/user/<uid>/detail", methods=['GET', 'POST'])
+@app.route("/user/<int:uid>/detail", methods=['GET', 'POST'])
 @root_required
 def user_detail(uid):
     if request.method == 'GET':
         user = User.query.filter_by(id=uid).first()
         dic = {'username': user.name, 'nickname': user.nickname, 'password': user.password, 'permission': user.permission}
         return json.dumps(dic)
-    else:
+
+    if request.method == 'GET':
+        user = User.query.filter_by(id=uid).first()
+        user.name = request.form['username']
+        user.nickname = request.form['nickname']
+        if request.form['password'] != "":
+            user.password = request.form['password']
+        user.permission = request.form['permission']
+        db.session.add(user)
+        db.session.commit()
 
 
 ########################################################################################################################
@@ -273,7 +281,7 @@ def add_article():
 @login_required
 def article_edit(uid):
     article = Article.query.filter_by(id=uid).first()
-    if g.user.permission == article.secondary.name or g.user.permission == 'admin':  # TODO:文章分类
+    if g.user.permission == article.secondary.name or g.user.permission == 'admin':
         form = CreateArticleForm()
         form.secondary.data = article.secondary
         form.title.data = article.title
@@ -299,7 +307,7 @@ def article_edit(uid):
 @login_required
 def article_del(uid):
     article = Article.query.filter_by(id=uid).first()
-    if g.user.permission == article.secondary.name or g.user.permission == 'admin':  # TODO:文章分类
+    if g.user.permission == article.secondary.name or g.user.permission == 'admin':
         db.session.delete(article)
         db.session.commit()
         return 0
