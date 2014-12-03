@@ -181,7 +181,7 @@ def del_slider(uid):
     return redirect(url_for('admin_slider'))
 
 
-@app.route("/slider/add", methods=['GET', 'POST'])
+@app.route("/slider/add", methods=["GET", "POST"])
 @root_required
 def add_slider():
     if request.method == 'GET':
@@ -197,7 +197,27 @@ def add_slider():
         showcase.url = url
         db.session.add(showcase)
         db.session.commit()
-        return redirect("/slider") #TODO : BUG!!!!!!!!!
+
+        showcase = Showcase.query.order_by("-id").all()
+        return render_template("admin/slider.html", showcase=showcase)
+
+
+@app.route("/slider/<uid>/detail", methods=['GET', 'POST'])
+@root_required
+def slider_detail(uid):
+    if request.method == 'GET':
+        slider = Showcase.query.filter_by(id=uid).first()
+        dic = {'text': slider.text, 'img': slider.img, 'url': slider.url}
+        return json.dumps(dic)
+
+    if request.method == 'POST':
+        slider = Showcase.query.filter_by(id=uid).first()
+        slider.text = request.form['text']
+        slider.img = request.form['img']
+        slider.url = request.form['url']
+        db.session.add(slider)
+        db.session.commit()
+        return 0
 
 
 ########################################################################################################################
@@ -294,7 +314,7 @@ def add_article():
     if form.validate_on_submit():
         form.create()
         return redirect("/")
-    return render_template("admin/add_article.html", form=form)
+    return render_template("admin/add-article.html", form=form)
 
 
 @app.route("/article/<int:uid>", methods=['GET', 'POST'])
@@ -318,7 +338,7 @@ def article_edit(uid):
             db.session.commit()
             return redirect("/article")
 
-        return render_template('admin/add_article.html', form=form)
+        return render_template('admin/add-article.html', form=form)
     else:
         return redirect("/article")
 

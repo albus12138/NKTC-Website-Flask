@@ -1,4 +1,4 @@
-{%  extends "admin/layout_admin.html" %}
+{%  extends "admin/layout-admin.html" %}
 
 {% block title %}NKTC管理中心-专题管理{% endblock %}
 
@@ -22,24 +22,22 @@
 	<div class="row">
 		<div class="col-xs-1 text-center">#</div>
 		<div class="col-xs-5 text-center">标题</div>
-		<div class="col-xs-3 text-center">图片URL</div>
-		<div class="col-xs-3 text-center">链接URL</div>
+		<div class="col-xs-2 text-center">图片URL</div>
+		<div class="col-xs-2 text-center">链接URL</div>
 	</div>
 
     {% for item in showcase %}
         <div class="row">
-            <div class="col-xs-1">
-                <input type="text" class="form-control" placeholder="ID" value="{{ item.id }}">
-            </div>
-            <div class="col-xs-5">
-                <input type="text" class="form-control" placeholder="标题" value="{{ item.text }}">
-            </div>
-            <div class="col-xs-3">
-                <input type="text" class="form-control" placeholder="图片URL" value="{{ item.img }}">
-            </div>
-            <div class="col-xs-3">
-                <input type="text" class="form-control" placeholder="专题URL" value="{{ item.url }}">
-            </div>
+            <div class="col-xs-1 text-center">{{ item.id }}</div>
+            <div class="col-xs-5 text-center">{{ item.text }}</div>
+            <div class="col-xs-2 text-center">{{ item.img }}</div>
+            <div class="col-xs-2 text-center">{{ item.url }}</div>
+			<div class="col-xs-2 text-center">
+				<div class="btn-group btn-group-xs">
+					<button type="button" class="btn btn-success" data-toggle="modal" data-target="#edit" data-uid="{{ item.id }}">编辑</button>
+					<button type="button" class="btn btn-danger" action="del" uid="{{ item.id }}">删除</button>
+				</div>
+			</div>
         </div>
     {% endfor %}
     <hr/>
@@ -61,37 +59,21 @@
 				<form id="updata-user">
 					<!--隐藏域 用于保存用户的UID值 提交到后台后 需要鉴权-->
 					<input type="hidden" name="uid" value="1">
-					<!--用户名-->
-					<div class="input-group">
-						<span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
-						<input type="text" class="form-control" name="username" value="ZLY">
-					</div>
-					<!--前台显示作者-->
-					<div class="input-group">
-						<span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
-						<input type="text" class="form-control" name="nickname" value="testtest">
-					</div>
-					<!--密码-->
-					<div class="input-group">
-						<span class="glyphicon glyphicon-lock input-group-addon" aria-hidden="true"></span>
-						<input type="text" class="form-control" name="password" placeholder="如果需要重置密码请填写新密码，否则请留空">
-					</div>
-
-					<div class="input-group">
-						<span>权限管理：</span>
-						<label class="checkbox-inline">
-							<input type="checkbox" name="func" value="list">菜单
-						</label>
-						<label class="checkbox-inline">
-							<input type="checkbox" name="func" value="user">用户
-						</label>
-						<label class="checkbox-inline">
-							<input type="checkbox" name="func" value="slider">专题
-						</label>
-						<label class="checkbox-inline">
-							<input type="checkbox" name="func" value="article">文章
-						</label>
-					</div>
+                    <!--标题-->
+                    <div class="input-group">
+                        <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
+                        <input type="text" class="form-control text" name="text">
+                    </div>
+                    <!--图片-->
+                    <div class="input-group">
+                        <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
+                        <input type="text" class="form-control img" name="img">
+                    </div>
+                    <!--URL-->
+                    <div class="input-group">
+                        <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
+                        <input type="text" class="form-control y" name="url">
+                    </div>
 				</form>
 			</div>
 			<div class="modal-footer">
@@ -105,8 +87,69 @@
 
 {% block script %}
 <script>
+    //更新弹出逻辑开始
+    $('#edit').on('show.bs.modal',function(event){
+        var button = $(event.relatedTarget)
+        var uid = button.data('uid')
+        var modal = $(this)
+        uid_global = uid
+        $.get("/slider/"+uid+"/detail",{'uid':uid},function(data){//修改user_detail.page为获取用户信息的页面
+                                                           //返回用户信息 要求字段:username,nickname,func
+                                                          //格式{"username":"zly","nickname":"ilovexhy","func":"list,user,article"}
+            if(data!=0){
+                var json = $.parseJSON(data);
+                var text = json['text'];
+                var img = json['img'];
+                var url = json['url']
+                modal.find('.modal-title').text('编辑' + text + "专题的信息");
+                modal.find('.uid').val(uid);
+                modal.find('.text').val(text);
+                modal.find('.img').val(img);
+                modal.find('.url').val(url)
+            }else{
+                window.alert("获取专题信息失败\n请联系管理员处理");
+            }
+        });
+    })
+    //更新弹出逻辑结束
+
+    //更新提交逻辑开始
+    $('#updata').on('click', function () {
+        var fun=[];
+        $("input[name='func']").each(function(){
+            if(this.checked)
+                fun.push($(this).val());
+        });
+        var func=new Object;
+        func.name="func";
+        func.value=fun.toString();
+        var updata_data = $("input[type='text']").serializeArray();
+        updata_data.push(func);
+        $.post("/slider/"+uid_global+"/detail",updata_data,function(data){//修改user_edit.page为编辑用户提交的页面
+            if(data==0){
+                $('#edit').modal('hide');
+                location.reload();
+            }else{
+                window.alert("更新失败，错误原因为："+data+"\n请联系管理员处理");
+           }
+        });
+    })
+    //更新提交逻辑结束
+
+    //删除逻辑开始
+    $("[action='del']").on('click',function(){
+        var uid=this.getAttribute("uid");
+        $.get("/slider/"+uid+"/del",{'uid':uid},function(data){//修改user_del.page为删除用户提交的页面
+            if(data==0){
+                location.reload();
+            }else{
+                window.alert("删除失败，错误原因为："+data+"\n请联系管理员处理");
+            }
+        });
+    })
+    //删除逻辑结束
+
     //添加按钮逻辑
-    var uid = 1
     $("#add-showcase").on('click',function(){
         location.href ="{{ url_for('add_slider') }}";
     })

@@ -1,4 +1,4 @@
-{% extends "admin/layout_admin.html" %}
+{% extends "admin/layout-admin.html" %}
 
 {% block title %}NKTC管理中心-用户管理{% endblock %}
 
@@ -22,17 +22,18 @@
     <div class="row">
         <div class="col-xs-6 col-xs-offset-3">
             <h4 class="text-center" style="margin-bottom:40px">添加专题</h4>
-            <form action="{{ url_for('add_user') }}" method="post">
+            <form action="{{ url_for('add_slider') }}" method="post">
+                <!--标题-->
                 <div class="input-group">
                     <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
                     <input type="text" class="form-control" name="text" placeholder="专题标题">
                 </div>
-                <!--前台显示作者-->
+                <!--图片URL-->
                 <div class="input-group">
                     <span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
                     <input type="text" class="form-control" name="img" placeholder="图片名称">
                 </div>
-                <!--权限-->
+                <!--URL-->
                 <div class="input-group">
                     <span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
                     <input type="text" class="form-control" name="url" placeholder="专题地址">
