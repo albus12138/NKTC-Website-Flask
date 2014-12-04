@@ -161,7 +161,7 @@
         var updata_data = $("input[type='text']").serializeArray();
         updata_data.push(func);
         $.post("/user/"+uid_global+"/detail",updata_data,function(data){//修改user_edit.page为编辑用户提交的页面
-            if(data==0){
+            if(data=="success"){
                 $('#edit').modal('hide');
                 location.reload();
             }else{
@@ -175,7 +175,7 @@
     $("[action='del']").on('click',function(){
         var uid=this.getAttribute("uid");
         $.get("/user/"+uid+"/del",{'uid':uid},function(data){//修改user_del.page为删除用户提交的页面
-            if(data==0){
+            if(data=="success"){
                 location.reload();
             }else{
                 window.alert("删除失败，错误原因为："+data+"\n请联系管理员处理");

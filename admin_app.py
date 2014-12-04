@@ -155,13 +155,56 @@ def admin_list():
     return render_template('admin/list.html', main_menu=main_menu, secondary_menu=secondary_menu)
 
 
-@app.route("/list-del/<uid>")
+@app.route("/menu/<int:uid>/del")
 @root_required
 def del_list(uid):
     list = Menu.query.filter_by(id=uid).first()
     db.session.delete(list)
     db.session.commit()
-    return redirect(url_for('admin_list'))
+    return "success"
+
+
+@app.route("/menu/add", methods=['GET', 'POST'])
+@root_required
+def add_menu():
+    if request.method == 'GET':
+        menu = Menu.query.filter_by(parent='root').all()
+        return render_template("admin/add-menu.html", main_menu=menu)
+
+    if request.method == 'POST':
+        name = request.form['name']
+        parent_id = int(request.form['secondary'])
+        if parent_id != 0:
+            parent = Menu.query.filter_by(id=parent_id).first()
+            parent = parent.name
+        else:
+            parent = 'root'
+        menu = Menu(name, parent)
+        db.session.add(menu)
+        db.session.commit()
+
+        main_menu = Menu.query.filter_by(parent='root').all()
+        secondary_menu = {}
+        for item in main_menu:
+            secondary_menu[item.id] = Menu.query.filter_by(parent=item.name).all()
+        return render_template('admin/list.html', main_menu=main_menu, secondary_menu=secondary_menu)
+
+
+@app.route("/menu/<int:uid>/detail", methods=['GET', 'POST'])
+@root_required
+def menu_detail(uid):
+    if request.method == 'GET':
+        menu = Menu.query.filter_by(id=uid).first()
+        dic = {'name': menu.name, 'parent': menu.parent}
+        return json.dumps(dic)
+
+    if request.method == 'POST':
+        menu = Menu.query.filter_by(id=uid).first()
+        menu.name = request.form['name']
+        menu.parent = request.form['parent']
+        db.session.add(menu)
+        db.session.commit()
+        return "success"
 
 
 ########################################################################################################################
@@ -172,13 +215,13 @@ def admin_slider():
     return render_template('admin/slider.html', showcase=showcase)
 
 
-@app.route("/slider-del/<int:uid>")
+@app.route("/slider/<int:uid>/del")
 @root_required
 def del_slider(uid):
     slider = Showcase.query.filter_by(id=uid).first()
     db.session.delete(slider)
     db.session.commit()
-    return redirect(url_for('admin_slider'))
+    return "success"
 
 
 @app.route("/slider/add", methods=["GET", "POST"])
@@ -217,7 +260,7 @@ def slider_detail(uid):
         slider.url = request.form['url']
         db.session.add(slider)
         db.session.commit()
-        return 0
+        return "success"
 
 
 ########################################################################################################################
@@ -248,7 +291,7 @@ def del_user(uid):
     user = User.query.filter_by(id=uid).first()
     db.session.delete(user)
     db.session.commit()
-    return redirect(url_for('admin_user'))
+    return "success"
 
 
 @app.route("/user/add", methods=["GET", "POST"])
@@ -294,7 +337,7 @@ def user_detail(uid):
         user.permission = request.form['permission']
         db.session.add(user)
         db.session.commit()
-        return 0
+        return "success"
 
 
 ########################################################################################################################
@@ -350,7 +393,7 @@ def article_del(uid):
     if g.user.permission == article.secondary.name or g.user.permission == 'admin':
         db.session.delete(article)
         db.session.commit()
-        return 0
+        return "success"
     else:
         return 'No Permission!'
 

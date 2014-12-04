@@ -20,7 +20,7 @@
 {% block content %}
 <div class="container" style="margin-top:20px;">
 	{% for item in main_menu %}
-		<div class="col-xs-offset-1 col-xs-9">
+	<div class="col-xs-offset-1 col-xs-9">
 		<div class="row">
 			<div class="col-xs-3">
 				<span class="glyphicon glyphicon-chevron-down"></span>
@@ -28,9 +28,8 @@
 			</div>
 			<div class="col-xs-9">
 				<div class="btn-group btn-group-xs">
-					<button type="button" class="btn btn-info">添加</button>
-					<button type="button" class="btn btn-success">编辑</button>
-					<button type="button" class="btn btn-danger">删除</button>
+					<button type="button" class="btn btn-success" data-toggle="modal" data-target="#edit" data-uid="{{ item.id }}">编辑</button>
+					<button type="button" class="btn btn-danger" action="del" uid="{{ item.id }}">删除</button>
 				</div>
 			</div>
 		</div>
@@ -41,20 +40,120 @@
 			</div>
 			<div class="col-xs-6">
 				<div class="btn-group btn-group-xs">
-					<button type="button" class="btn btn-info disabled">添加</button>
-					<button type="button" class="btn btn-success">编辑</button>
-					<button type="button" class="btn btn-danger">删除</button>
+					<button type="button" class="btn btn-success" data-toggle="modal" data-target="#edit" data-uid="{{ item_secondary.id }}">编辑</button>
+					<button type="button" class="btn btn-danger" action="del" uid="{{ item_secondary.id }}">删除</button>
 				</div>
 			</div>
 		</div>
         {% endfor %}
 	</div>
 	{% endfor %}
+    <hr/>
+    <div class="row">
+        <div class="col-xs-2 col-xs-offset-10 text-center">
+            <button type="button" class="btn btn-warning" id="add-menu">添加菜单</button>
+        </div>
+    </div>
 </div>
+
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">编辑{XXX菜单}的信息</h4>
+            </div>
+            <div class="modal-body">
+                <form id="updata-user">
+                    <!--隐藏域 用于保存用户的UID值 提交到后台后 需要鉴权-->
+                    <input type="hidden" name="uid" value="1" class="uid">
+                    <!--用户名-->
+                    <div class="input-group">
+                        <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
+                        <input type="text" class="form-control name" name="name">
+                    </div>
+                    <!--前台显示作者-->
+                    <div class="input-group">
+                        <span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
+                        <input type="text" class="form-control parent" name="parent">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="updata">更新</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
-<script src="http://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/holder.js"></script>
-</body>
-</html>
+{% block script %}
+<script>
+    //更新弹出逻辑开始
+    $('#edit').on('show.bs.modal',function(event){
+        var button = $(event.relatedTarget)
+        var uid = button.data('uid')
+        var modal = $(this)
+        uid_global = uid
+        $.get("/menu/"+uid+"/detail",{'uid':uid},function(data){//修改user_detail.page为获取用户信息的页面
+                                                           //返回用户信息 要求字段:username,nickname,func
+                                                          //格式{"username":"zly","nickname":"ilovexhy","func":"list,user,article"}
+            if(data!=0){
+                var json = $.parseJSON(data);
+                var name = json['name'];
+                var parent = json['parent'];
+                modal.find('.modal-title').text('编辑' + name + "用户的信息");
+                modal.find('.uid').val(uid);
+                modal.find('.name').val(name);
+                modal.find('.parent').val(parent);
+            }else{
+                window.alert("获取用户信息失败\n请联系管理员处理");
+            }
+        });
+    })
+    //更新弹出逻辑结束
+
+    //更新提交逻辑开始
+    $('#updata').on('click', function () {
+        var fun=[];
+        $("input[name='func']").each(function(){
+            if(this.checked)
+                fun.push($(this).val());
+        });
+        var func=new Object;
+        func.name="func";
+        func.value=fun.toString();
+        var updata_data = $("input[type='text']").serializeArray();
+        updata_data.push(func);
+        $.post("/menu/"+uid_global+"/detail",updata_data,function(data){//修改user_edit.page为编辑用户提交的页面
+            if(data=="success"){
+                $('#edit').modal('hide');
+                location.reload();
+            }else{
+                window.alert("更新失败，错误原因为："+data+"\n请联系管理员处理");
+           }
+        });
+    })
+    //更新提交逻辑结束
+
+    //删除逻辑开始
+    $("[action='del']").on('click',function(){
+        var uid=this.getAttribute("uid");
+        $.get("/menu/"+uid+"/del",{'uid':uid},function(data){//修改user_del.page为删除用户提交的页面
+            if(data=="success"){
+                location.reload();
+            }else{
+                window.alert("删除失败，错误原因为："+data+"\n请联系管理员处理");
+            }
+        });
+    })
+    //删除逻辑结束
+
+    //添加按钮逻辑
+    $("#add-menu").on('click',function(){
+        location.href ="{{ url_for('add_menu')}}";
+    })
+</script>
+{% endblock %}

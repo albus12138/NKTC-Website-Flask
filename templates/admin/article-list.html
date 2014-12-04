@@ -56,7 +56,7 @@
 	//删除逻辑开始
 	$("[action='del']").on('click',function(){
 		$.get(this.getAttribute("url"), function(data){//修改article_del.page为删除用户提交的页面
-			if(data==0){
+			if(data=="success"){
 				location.reload();
 			}else{
 				window.alert("删除失败，错误原因为："+data+"\n请联系管理员处理");
