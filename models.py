@@ -100,7 +100,13 @@ class Article(db.Model):
     )
     secondary = db.relationship("Menu")
 
+    ans_click = db.Column(db.Integer)
+
+    show_flag = db.Column(db.Boolean)
+
     def save(self):
+        self.ans_click = 0
+        self.show_flag = True
         db.session.add(self)
         db.session.commit()
 

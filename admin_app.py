@@ -265,24 +265,27 @@ def slider_detail(uid):
 
 ########################################################################################################################
 @app.route("/user", methods=["GET", "POST"])
-@root_required
+@login_required
 def admin_user():
-    if request.method == "POST":
-        user = User.query.filter_by(id=request.form['uid']).first()
-        if user.name != request.form['username']:
-            user.name = request.form['username']
-        if user.nickname != request.form['nickname']:
-            user.nickname = request.form['nickname']
-        if request.form['password'] != '':
-            user.password = request.form['password']
-        if user.permission != request.form['permission']:
-            user.permission = request.form['permission']
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for('admin_user'))
+    if g.user.permission == 'admin':
+        if request.method == "POST":
+            user = User.query.filter_by(id=request.form['uid']).first()
+            if user.name != request.form['username']:
+                user.name = request.form['username']
+            if user.nickname != request.form['nickname']:
+                user.nickname = request.form['nickname']
+            if request.form['password'] != '':
+                user.password = request.form['password']
+            if user.permission != request.form['permission']:
+                user.permission = request.form['permission']
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('admin_user'))
 
-    if request.method == "GET":
-        return render_template('admin/user.html', users=User.query.all())
+        if request.method == "GET":
+            return render_template('admin/user.html', users=User.query.all())
+    else:
+        return redirect("/user/info")
 
 
 @app.route("/user/<int:uid>/del")
@@ -338,6 +341,23 @@ def user_detail(uid):
         db.session.add(user)
         db.session.commit()
         return "success"
+
+
+@app.route("/user/info", methods=['GET', 'POST'])
+@login_required
+def user_info():
+    if request.method == 'GET':
+        return render_template("admin/user-info.html", user=g.user)
+
+    if request.method == 'POST':
+        user = g.user
+        user.name = request.form['username']
+        user.nickname = request.form['nickname']
+        if request.form['password'] != '':
+            user.password = request.form['password']
+        db.session.add(user)
+        db.session.commit()
+        return render_template("admin/user-info.html", user=user)
 
 
 ########################################################################################################################
