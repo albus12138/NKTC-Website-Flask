@@ -50,6 +50,7 @@ class LoginForm(Form):
         self.user.failed_times = 0
         self.user.save()
         session["id"] = self.user.id
+        self.user.login_time = datetime.now()
 
 
 class CreateArticleForm(Form):
@@ -283,7 +284,10 @@ def admin_user():
             return redirect(url_for('admin_user'))
 
         if request.method == "GET":
-            return render_template('admin/user.html', users=User.query.all())
+            users = User.query.all()
+            for user in users:
+                user.login_time = user.login_time.strftime("%Y-%m-%d %X")
+            return render_template('admin/user.html', users=users)
     else:
         return redirect("/user/info")
 
@@ -364,10 +368,16 @@ def user_info():
 @app.route("/article")
 @login_required
 def admin_article_list():
-    article = Article.query.order_by("-id").all()
-    for item in article:
-        item.date = item.date.strftime("%Y-%m-%d %X")
-    return render_template('admin/article-list.html', article=article)
+    if g.user.permission != 'admin':
+        article = Article.query.filter_by(secondary=g.user.permission, show_flag=True).order_by("-id").all()
+        for item in article:
+            item.date = item.date.strftime("%Y-%m-%d %X")
+        return render_template('admin/article-list.html', article=article)
+    if g.user.permission == 'admin':
+        article = Article.query.filter_by(show_flag=True).order_by("-id").all()
+        for item in article:
+            item.date = item.date.strftime("%Y-%m-%d %X")
+        return render_template('admin/article-list.html', article=article)
 
 
 @app.route("/article/add", methods=["GET", "POST"])
@@ -411,7 +421,8 @@ def article_edit(uid):
 def article_del(uid):
     article = Article.query.filter_by(id=uid).first()
     if g.user.permission == article.secondary.name or g.user.permission == 'admin':
-        db.session.delete(article)
+        article.show_flag = False
+        db.session.add(article)
         db.session.commit()
         return "success"
     else:

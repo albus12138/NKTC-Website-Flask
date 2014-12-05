@@ -45,6 +45,7 @@ class User(db.Model):
     permission = db.Column(db.String(20))
     locked = db.Column(db.Boolean, default=False)
     failed_times = db.Column(db.Integer, default=0)
+    login_time = db.Column(db.DateTime(), default=datetime.now())
 
     @property
     def otp_auth(self):
@@ -109,6 +110,9 @@ class Article(db.Model):
         self.show_flag = True
         db.session.add(self)
         db.session.commit()
+
+    def click(self):
+        self.ans_click += 1
 
     def __init__(self, title, text, secondary):
         self.title = title

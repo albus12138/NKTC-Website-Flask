@@ -27,9 +27,9 @@ def get_menu(name):
 def index():
     menu = get_menu('root')
     showcase = Showcase.query.all()
-    news_1 = Article.query.filter_by(main="NKTC").order_by("-date")
-    news_2 = Article.query.filter_by(main=u'学生会').order_by("-date")
-    news_3 = Article.query.filter_by(main=u'社团活动').order_by("-date")
+    news_1 = Article.query.filter_by(main="NKTC", show_flag=True).order_by("-date")
+    news_2 = Article.query.filter_by(main=u'学生会', show_flag=True).order_by("-date")
+    news_3 = Article.query.filter_by(main=u'社团活动', show_flag=True).order_by("-date")
     return render_template('index.html', menu=menu, showcase=showcase, news_1=news_1, news_2=news_2, news_3=news_3)
 
 
@@ -42,7 +42,7 @@ def list(name, title):
     main_menu = get_menu('root')
     secondary = Menu.query.filter_by(name=title).first()
     secondary_menu = get_menu(name)
-    content = Article.query.filter_by(main=name, secondary=secondary).all()
+    content = Article.query.filter_by(main=name, secondary=secondary, show_flag=True).all()
     for item in content:
         item.date = item.date.strftime("%Y-%m-%d %X")
     return render_template('list.html', menu=main_menu, list=secondary_menu, news=content, title=title, parent=name)
@@ -52,8 +52,9 @@ def list(name, title):
 def page(title):
     menu = get_menu('root')
     content = Article.query.filter_by(title=title).first()
-    news = Article.query.filter_by(secondary=content.secondary).all()
+    news = Article.query.filter_by(secondary=content.secondary, show_flag=True).all()
     content.date = content.date.strftime("%Y-%m-%d %X")
+    content.click()
     return render_template('page.html', menu=menu, content=content, news=news, title=content.secondary.name, parent=content.secondary.parent)
 
 
