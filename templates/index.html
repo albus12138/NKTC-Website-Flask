@@ -85,7 +85,7 @@
                         <div class="row">
                                     <h4 class="inline-block"><a href="{{ url_for('page', main=item.main, secondary=item.sceondary, title=item.title) }}">{{ item.title }}</a></h4>
                                         <blockquote class="index-news-content hidden-sm hidden-xs">
-                                            <p>{{ item.text }}...</p>
+                                            <p>{{ item.text | safe }}...</p>
                                         </blockquote>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
                         <div class="row">
                                     <h4 class="inline-block"><a href="{{ url_for('page', main=item.main, secondary=item.sceondary, title=item.title) }}">{{ item.title }}</a></h4>
                                         <blockquote class="index-news-content hidden-sm hidden-xs">
-                                            <p>{{ item.text }}...</p>
+                                            <p>{{ item.text | safe }}...</p>
                                         </blockquote>
                         </div>
                     </div>
@@ -141,7 +141,7 @@
                         <div class="row">
                                     <h4 class="inline-block"><a href="{{ url_for('page', main=item.main, secondary=item.sceondary, title=item.title) }}">{{ item.title }}</a></h4>
                                         <blockquote class="index-news-content hidden-sm hidden-xs">
-                                            <p>{{ item.text }}...</p>
+                                            <p>{{ item.text | safe }}...</p>
                                         </blockquote>
                         </div>
                     </div>
