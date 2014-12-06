@@ -1,6 +1,6 @@
 # -*- coding:utf-8  -*-
 
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, abort
 
 from models import Menu, Article, Showcase, db
 from config import DevelopmentConfig
@@ -53,9 +53,12 @@ def page(title):
     menu = get_menu('root')
     content = Article.query.filter_by(title=title).first()
     news = Article.query.filter_by(secondary=content.secondary, show_flag=True).all()
-    content.date = content.date.strftime("%Y-%m-%d %X")
-    content.click()
-    return render_template('page.html', menu=menu, content=content, news=news, title=content.secondary.name, parent=content.secondary.parent)
+    if content.show_flag is True:
+        content.date = content.date.strftime("%Y-%m-%d %X")
+        content.click()
+        return render_template('page.html', menu=menu, content=content, news=news, title=content.secondary.name, parent=content.secondary.parent)
+    else:
+        return abort(404)
 
 
 if __name__ == '__main__':

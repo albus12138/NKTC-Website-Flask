@@ -50,11 +50,11 @@
             {% for item in showcase %}
                 {% if showcase[0] == item %}
                     <div class="item active">
-                        <img src="{{ url_for('static', filename="img/%s" % item.img) }}" alt="{{ item.text }}"/>
+                        <a href="{{ item.url }}"><img src="{{ url_for('static', filename="img/%s" % item.img) }}" alt="{{ item.text }}"/></a>
                     </div>
                 {% else %}
                     <div class="item">
-                        <img src="{{ url_for('static', filename="img/%s" % item.img) }}" alt="{{ item.text }}"/>
+                        <a href="{{ item.url }}"><img src="{{ url_for('static', filename="img/%s" % item.img) }}" alt="{{ item.text }}"/></a>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -100,8 +100,9 @@
                 </div>
             {% endif %}
         {% endfor %}
+        </div>
 
-                <div class="col-xs-12 col-sm-4 hr">
+        <div class="col-xs-12 col-sm-4 hr">
         {% for item in news_2 %}
             {% if item == news_2[0] %}
                 <div class="row">
@@ -127,8 +128,9 @@
                 </div>
             {% endif %}
         {% endfor %}
+        </div>
 
-                <div class="col-xs-12 col-sm-4 hr">
+         <div class="col-xs-12 col-sm-4">
         {% for item in news_3 %}
             {% if item == news_3[0] %}
                 <div class="row">
@@ -154,6 +156,7 @@
                 </div>
             {% endif %}
         {% endfor %}
+         </div>
 
         </div>
     </div>
