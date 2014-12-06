@@ -22,7 +22,7 @@
 	<div class="row">
 		<div class="col-xs-1 text-center">#</div>
 		<div class="col-xs-5 text-center">标题</div>
-		<div class="col-xs-2 text-center">图片URL</div>
+		<div class="col-xs-2 text-center">文件名</div>
 		<div class="col-xs-2 text-center">链接URL</div>
         <div class="col-xs-2 text-center">操作</div>
 	</div>
@@ -62,17 +62,17 @@
 					<input type="hidden" name="uid" value="1">
                     <!--标题-->
                     <div class="input-group">
-                        <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-th-large input-group-addon" aria-hidden="true"></span>
                         <input type="text" class="form-control text" name="text">
                     </div>
                     <!--图片-->
                     <div class="input-group">
-                        <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-picture input-group-addon" aria-hidden="true"></span>
                         <input type="text" class="form-control img" name="img">
                     </div>
                     <!--URL-->
                     <div class="input-group">
-                        <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-link input-group-addon" aria-hidden="true"></span>
                         <input type="text" class="form-control url" name="url">
                     </div>
 				</form>
@@ -102,7 +102,7 @@
                 var text = json['text'];
                 var img = json['img'];
                 var url = json['url']
-                modal.find('.modal-title').text('编辑' + text + "专题的信息");
+                modal.find('.modal-title').text('编辑 ' + text + " 专题的信息");
                 modal.find('.uid').val(uid);
                 modal.find('.text').val(text);
                 modal.find('.img').val(img);

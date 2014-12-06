@@ -106,8 +106,8 @@
 
                     <!--权限-->
                     <div class="input-group">
-                        <span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
-                        <input type="text" class="form-control permission" name="permission">
+                        <span class="glyphicon glyphicon-cog input-group-addon" aria-hidden="true"></span>
+                        <input type="text" class="form-control permission" name="permission" placeholder="管理员=admin，编辑=负责板块名称">
                     </div>
                 </form>
             </div>
@@ -136,7 +136,7 @@
                 var username = json['username'];
                 var nickname = json['nickname'];
                 var permission = json['permission']
-                modal.find('.modal-title').text('编辑' + username + "用户的信息");
+                modal.find('.modal-title').text('编辑 ' + username + " 用户的信息");
                 modal.find('.uid').val(uid);
                 modal.find('.username').val(username);
                 modal.find('.nickname').val(nickname);

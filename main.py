@@ -30,21 +30,6 @@ def index():
     news_1 = Article.query.filter_by(main="NKTC", show_flag=True).order_by("-date")
     news_2 = Article.query.filter_by(main=u'学生会', show_flag=True).order_by("-date")
     news_3 = Article.query.filter_by(main=u'社团活动', show_flag=True).order_by("-date")
-    for item in news_1:
-        where = item.text.find('</p>')
-        if where > 20:
-            where = 20
-        item.text = item.text[3:where]
-    for item in news_2:
-        where = item.text.find('</p>')
-        if where > 20:
-            where = 20
-        item.text = item.text[3:where]
-    for item in news_2:
-        where = item.text.find('</p>')
-        if where > 20:
-            where = 20
-        item.text = item.text[3:where]
     return render_template('index.html', menu=menu, showcase=showcase, news_1=news_1, news_2=news_2, news_3=news_3)
 
 

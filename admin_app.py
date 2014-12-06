@@ -65,6 +65,7 @@ class CreateArticleForm(Form):
         Required(),
         Length(max=100)
     ])
+    info = TextField("简介（20字以内）", validators=[Required()])
     text = TextAreaField("正文", validators=[Required()])  # TODO: 验证内容合法性 HTML(),sanitize
 
     def create(self):
@@ -399,6 +400,7 @@ def article_edit(uid):
         form.secondary.data = article.secondary
         form.title.data = article.title
         form.text.data = article.text
+        form.info.data = article.info
 
         if form.validate_on_submit():
             article.title = request.form['title']
@@ -407,6 +409,7 @@ def article_edit(uid):
             secondary_new = Menu.query.filter_by(id=ID).first()
             article.secondary = secondary_new
             article.date = datetime.now()
+            article.info = request.form['info']
             db.session.add(article)
             db.session.commit()
             return redirect("/article")

@@ -9,7 +9,7 @@
             <ul class="nav nav-tabs  nav-justified" role="tablist">
                 <li role="presentation"><a href="{{ url_for('admin_list') }}">分类管理</a></li>
                 <li role="presentation"><a href="{{ url_for('admin_slider')}}">专题管理</a></li>
-                <li role="presentation" class="active"><a href="#">用户管理</a></li>
+                <li role="presentation"><a href="{{ url_for('admin_user') }}">用户管理</a></li>
                 <li role="presentation"><a href="{{ url_for('admin_article_list') }}">文章管理</a></li>
             </ul>
         </div>
@@ -40,7 +40,7 @@
 
                 <!--权限-->
                 <div class="input-group">
-                    <span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-cog input-group-addon" aria-hidden="true"></span>
                     <input type="text" class="form-control" name="permission" placeholder="权限">
                 </div>
 

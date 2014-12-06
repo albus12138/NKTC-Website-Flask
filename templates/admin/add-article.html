@@ -1,10 +1,25 @@
-{% extends "layout.html" %}
+{% extends "admin/layout-admin.html" %}
 
 {% block title %}NKTC管理中心-文章内容管理{% endblock %}
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/simditor.css') }}"/>
+{% endblock %}
+
+{% block menu %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <ul class="nav nav-tabs  nav-justified" role="tablist">
+                <li role="presentation"><a href="{{ url_for('admin_list') }}">分类管理</a></li>
+                <li role="presentation"><a href="{{ url_for('admin_slider') }}">专题管理</a></li>
+                <li role="presentation"><a href="{{ url_for('admin_user') }}">用户管理</a></li>
+                <li role="presentation"><a href="{{ url_for('admin_article_list') }}">文章管理</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block content %}
@@ -14,15 +29,14 @@
             <form action="" method="post">
                  {% from "snippet/form.html" import form_field, select_field %}
                 <div class="signal-form">
-                    <header>文章内容管理</header>
-                    <hr/>
                     <form method="post" action="">
                         {{ form.csrf_token }}
-                        {{ form_field(form.secondary) }}
                         {{ form_field(form.title) }}
+                        {{ form_field(form.secondary) }}
+                        {{ form_field(form.info) }}
                         {{ form_field(form.text) }}
                         <div class="form-controls">
-                            <button type="submit">提交</button>
+                            <button class="btn btn-success" type="submit">提交</button>
                         </div>
                     </form>
                 </div>

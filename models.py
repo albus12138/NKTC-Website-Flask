@@ -105,20 +105,25 @@ class Article(db.Model):
 
     show_flag = db.Column(db.Boolean)
 
+    info = db.Column(db.String(20))
+
     def save(self):
         self.ans_click = 0
         self.show_flag = True
+        if len(self.info) > 20:
+            self.info = self.info[0:21]
         db.session.add(self)
         db.session.commit()
 
     def click(self):
         self.ans_click += 1
 
-    def __init__(self, title, text, secondary):
+    def __init__(self, title, text, info, secondary):
         self.title = title
         self.text = text
         self.secondary = secondary
         self.main = secondary.parent
+        self.info = info
 
 
 class Showcase(db.Model):

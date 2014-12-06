@@ -72,12 +72,12 @@
                     <input type="hidden" name="uid" value="1" class="uid">
                     <!--用户名-->
                     <div class="input-group">
-                        <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-th-large input-group-addon" aria-hidden="true"></span>
                         <input type="text" class="form-control name" name="name">
                     </div>
                     <!--前台显示作者-->
                     <div class="input-group">
-                        <span class="glyphicon glyphicon-pencil input-group-addon" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-th-list input-group-addon" aria-hidden="true"></span>
                         <input type="text" class="form-control parent" name="parent">
                     </div>
                 </form>
@@ -107,7 +107,7 @@
                 var json = $.parseJSON(data);
                 var name = json['name'];
                 var parent = json['parent'];
-                modal.find('.modal-title').text('编辑' + name + "用户的信息");
+                modal.find('.modal-title').text('编辑 ' + name + " 菜单的信息");
                 modal.find('.uid').val(uid);
                 modal.find('.name').val(name);
                 modal.find('.parent').val(parent);
