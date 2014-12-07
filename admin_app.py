@@ -5,24 +5,23 @@ import functools
 import os
 import json
 
-from flask import Flask, request, session, render_template, redirect, g, url_for, abort, jsonify
+from flask import Flask, request, session, render_template, redirect, g, url_for, abort, jsonify, flash
 from models import db, User, Menu, Showcase, Article
-from config import Config, DevelopmentConfig
-from wtforms import TextField, TextAreaField
+from wtforms import TextField, TextAreaField, PasswordField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.validators import Required, Optional, Length
+from wtforms.validators import Required, Length, DataRequired
 from datetime import datetime
 from sanitize import HTML
-
 from flask_wtf import Form
-from wtforms import TextField, PasswordField
-from wtforms.validators import DataRequired
+
+from config import DevelopmentConfig
+# from config import Config
 
 
 class LoginForm(Form):
     username = TextField('用户名', validators=[DataRequired()])
     password = PasswordField('密码', validators=[DataRequired()])
-    otp_token = TextField('两步验证代码', validators=[DataRequired()])
+    otp_token = TextField('动态验证码', validators=[DataRequired()])
 
     def validate_password(self, field):
         account = self.username.data
@@ -53,9 +52,6 @@ class LoginForm(Form):
         session["id"] = self.user.id
         self.user.login_time = datetime.now()
 
-    def logout(self):
-        session.pop('id', None)
-
 
 class CreateArticleForm(Form):
     secondary = QuerySelectField(
@@ -82,8 +78,6 @@ app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 db.init_app(app)
 db.app = app
-from flask_debugtoolbar import DebugToolbarExtension
-DebugToolbarExtension(app)
 
 
 @app.before_request
@@ -118,7 +112,7 @@ def root_required(method):
             user = g.user
             if user.id == 1 or user.permission == 'admin':
                 return method(*args, **kwargs)
-        return redirect("http://whouz.com")
+        return abort(403)
     return wrapper
 
 
@@ -126,6 +120,7 @@ def root_required(method):
 @login_required
 def index():
     return redirect(url_for('admin_article_list'))
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -138,8 +133,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    form = LoginForm()
-    form.logout()
+    session.pop("id", None)
     return redirect("/login")
 
 
@@ -147,14 +141,14 @@ def logout():
 @login_required
 def upload_file():
     import uuid
-    file = request.files['upload_file']
-    if file:
-        filename = "".join([str(uuid.uuid4()), ".", file.filename.split(".")[-1]])
-        file.save(os.path.join(app.root_path, "static", app.config['UPLOAD_FOLDER'], filename))
+    f = request.files['upload_file']
+    if f:
+        filename = "".join([str(uuid.uuid4()), ".", f.filename.split(".")[-1]])
+        f.save(os.path.join(app.root_path, "static", app.config['UPLOAD_FOLDER'], filename))
         return jsonify(
             success=True,
             msg="呵呵",
-            file_path=url_for("static", filename="%s/%s" % (app.config["UPLOAD_FOLDER"] ,filename))
+            file_path=url_for("static", filename="%s/%s" % (app.config["UPLOAD_FOLDER"], filename))
         )
 
 
@@ -165,15 +159,15 @@ def admin_list():
     main_menu = Menu.query.filter_by(parent='root').all()
     secondary_menu = {}
     for item in main_menu:
-       secondary_menu[item.id] = Menu.query.filter_by(parent=item.name).all()
+        secondary_menu[item.id] = Menu.query.filter_by(parent=item.name).all()
     return render_template('admin/list.html', main_menu=main_menu, secondary_menu=secondary_menu)
 
 
 @app.route("/menu/<int:uid>/del")
 @root_required
 def del_list(uid):
-    list = Menu.query.filter_by(id=uid).first()
-    db.session.delete(list)
+    menu = Menu.query.filter_by(id=uid).first()
+    db.session.delete(menu)
     db.session.commit()
     return "success"
 
@@ -194,8 +188,7 @@ def add_menu():
         else:
             parent = 'root'
         menu = Menu(name, parent)
-        db.session.add(menu)
-        db.session.commit()
+        menu.save()
 
         main_menu = Menu.query.filter_by(parent='root').all()
         secondary_menu = {}
@@ -215,9 +208,13 @@ def menu_detail(uid):
     if request.method == 'POST':
         menu = Menu.query.filter_by(id=uid).first()
         menu.name = request.form['name']
-        menu.parent = request.form['parent']
-        db.session.add(menu)
-        db.session.commit()
+        parent_id = int(request.form['secondary'])
+        if parent_id != 0:
+            parent = Menu.query.filter_by(id=parent_id).first()
+            menu.parent = parent.name
+        else:
+            menu.parent = 'root'
+        menu.save()
         return "success"
 
 
@@ -252,8 +249,7 @@ def add_slider():
         showcase.img = img
         showcase.text = text
         showcase.url = url
-        db.session.add(showcase)
-        db.session.commit()
+        showcase.save()
 
         showcase = Showcase.query.order_by("-id").all()
         return render_template("admin/slider.html", showcase=showcase)
@@ -272,8 +268,7 @@ def slider_detail(uid):
         slider.text = request.form['text']
         slider.img = request.form['img']
         slider.url = request.form['url']
-        db.session.add(slider)
-        db.session.commit()
+        slider.save()
         return "success"
 
 
@@ -292,8 +287,7 @@ def admin_user():
                 user.password = request.form['password']
             if user.permission != request.form['permission']:
                 user.permission = request.form['permission']
-            db.session.add(user)
-            db.session.commit()
+            user.save()
             return redirect(url_for('admin_user'))
 
         if request.method == "GET":
@@ -319,22 +313,22 @@ def del_user(uid):
 def add_user():
     if request.method == "POST":
         if request.form['username'] is None:
-            raise ValueError('请输入登录用户名')
+            return "fail"
         if request.form['nickname'] is None:
-            raise ValueError('请输入前端显示用户名')
+            return "fail"
         if request.form['password'] is None:
-            raise ValueError('请输入登录密码')
+            return "fail"
         if request.form['permission'] is None:
-            raise ValueError('请输入权限信息')
+            return "fail"
         user = User()
         user.name = request.form['username']
         user.nickname = request.form['nickname']
         user.password = request.form['password']
         user.permission = request.form['permission']
         otop = user.regenerate_otp_token()
-        db.session.add(user)
-        db.session.commit()
-        return render_template("admin/qrcode.html", otop=otop)
+        user.save()
+        return otop
+#        return render_template("admin/qrcode.html", otop=otop)
 
     if request.method == "GET":
         return render_template('admin/add-user.html')
@@ -345,7 +339,12 @@ def add_user():
 def user_detail(uid):
     if request.method == 'GET':
         user = User.query.filter_by(id=uid).first()
-        dic = {'username': user.name, 'nickname': user.nickname, 'password': user.password, 'permission': user.permission}
+        dic = {
+            'username': user.name,
+            'nickname': user.nickname,
+            'password': user.password,
+            'permission': user.permission
+        }
         return json.dumps(dic)
 
     if request.method == 'POST':
@@ -355,8 +354,7 @@ def user_detail(uid):
         if request.form['password'] != "":
             user.password = request.form['password']
         user.permission = request.form['permission']
-        db.session.add(user)
-        db.session.commit()
+        user.save()
         return "success"
 
 
@@ -367,14 +365,14 @@ def user_info():
         return render_template("admin/user-info.html", user=g.user)
 
     if request.method == 'POST':
-        user = g.user
+        user = User.query.filter_by(id=g.user.id).first()
         user.name = request.form['username']
         user.nickname = request.form['nickname']
         if request.form['password'] != '':
             user.password = request.form['password']
-        db.session.add(user)
-        db.session.commit()
-        return render_template("admin/user-info.html", user=user)
+        session.pop("id", None)
+        user.save()
+        return redirect("/login")
 
 
 ########################################################################################################################
@@ -418,18 +416,17 @@ def article_edit(uid):
         if form.validate_on_submit():
             article.title = request.form['title']
             article.text = request.form['text']
-            ID = int(request.form['secondary'])
-            secondary_new = Menu.query.filter_by(id=ID).first()
+            number = int(request.form['secondary'])
+            secondary_new = Menu.query.filter_by(id=number).first()
             article.secondary = secondary_new
             article.date = datetime.now()
             article.info = request.form['info']
-            db.session.add(article)
-            db.session.commit()
+            article.save()
             return redirect("/article")
 
         return render_template('admin/add-article.html', form=form)
     else:
-        return redirect("/article")
+        return abort(403)
 
 
 @app.route("/article/<int:uid>/del")
@@ -438,11 +435,10 @@ def article_del(uid):
     article = Article.query.filter_by(id=uid).first()
     if g.user.permission == article.secondary.name or g.user.permission == 'admin':
         article.show_flag = False
-        db.session.add(article)
-        db.session.commit()
+        article.save()
         return "success"
     else:
-        return 'No Permission!'
+        return abort(403)
 
 
 ########################################################################################################################

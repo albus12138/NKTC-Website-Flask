@@ -22,10 +22,14 @@ def add_user():
         username = raw_input("Username: ")
         nickname = raw_input("Nickname: ")
         password = raw_input("Password: ")
+        permission = raw_input("Permission: ")
         user = User()
         user.name = username
         user.nickname = nickname
         user.password = password
+        user.permission = permission
+        user.locked = False
+        user.failed_times = 0
         str = user.regenerate_otp_token()
         print str
 

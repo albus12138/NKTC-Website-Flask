@@ -1,8 +1,24 @@
-<h1>快..来扫人家</h1>
+{% extends "admin/layout-admin.html" %}
+
+{% block content %}
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">请使用谷歌身份验证器扫描二维码</h4>
+            </div>
+            <div id="qrcode"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
 <script src="http://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='js/qrcode.min.js') }}"></script>
-<div id="qrcode"></div>
 <script>
     var qrcode = new QRCode("qrcode");
     qrcode.makeCode("{{ otop }}");
 </script>
+{% endblock %}

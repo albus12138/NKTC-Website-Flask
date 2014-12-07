@@ -11,10 +11,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/default.min.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}"/>
     {% block head %}{% endblock %}
-    <!--[if lt IE 9]>
-    <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-    <script src="http://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 	<style>
     	.row{
 	   	   margin-bottom:10px;
@@ -38,16 +34,8 @@
 <body>
 
 {% block menu %}{% endblock %}
-{% block content %}{% endblock %}
 
-<div class="container copyright bottom col-xs-12" style="background-color: #E8E8E8;">
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="hidden-sm hidden-xs text-center"><a href="{{ url_for('logout') }}">注销登录</a></div>
-            <div class="hidden-md hidden-lg text-center"><a href="{{ url_for('logout') }}">注销登录</a></div>
-        </div>
-    </div>
-</div>
+{% block content %}{% endblock %}
 
 <script src="http://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

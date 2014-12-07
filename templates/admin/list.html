@@ -75,10 +75,15 @@
                         <span class="glyphicon glyphicon-th-large input-group-addon" aria-hidden="true"></span>
                         <input type="text" class="form-control name" name="name">
                     </div>
-                    <!--前台显示作者-->
+                    <!--父项-->
                     <div class="input-group">
                         <span class="glyphicon glyphicon-th-list input-group-addon" aria-hidden="true"></span>
-                        <input type="text" class="form-control parent" name="parent">
+                        <select class="form-control" id="secondary" name="secondary" placeholder="父项菜单">
+                            <option value="0">root</option>
+                            {% for item in main_menu %}
+                                <option value="{{ item.id }}">---{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </form>
             </div>
@@ -90,6 +95,14 @@
     </div>
 </div>
 
+<div class="container copyright bottom col-xs-12" style="background-color: #E8E8E8;">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="hidden-sm hidden-xs text-center"><a href="{{ url_for('logout') }}">注销登录</a></div>
+            <div class="hidden-md hidden-lg text-center"><a href="{{ url_for('logout') }}">注销登录</a></div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block script %}

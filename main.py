@@ -12,8 +12,6 @@ app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 db.init_app(app)
 db.app = app
-from flask_debugtoolbar import DebugToolbarExtension
-DebugToolbarExtension(app)
 
 
 # Function
@@ -59,6 +57,11 @@ def page(title):
         return render_template('page.html', menu=menu, content=content, news=news, title=content.secondary.name, parent=content.secondary.parent)
     else:
         return abort(404)
+
+
+@app.route("/activity/<name>")
+def activity(name):
+    return render_template("/activity/%s/index.html" % name)
 
 
 if __name__ == '__main__':

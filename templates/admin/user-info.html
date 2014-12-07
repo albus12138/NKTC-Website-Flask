@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col-xs-6 col-xs-offset-3">
             <h4 class="text-center" style="margin-bottom:40px">修改个人信息</h4>
-            <form action="{{ url_for('add_user') }}" method="post">
+            <form action="{{ url_for('user_info') }}" method="post">
                 <div class="input-group">
                     <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
                     <input type="text" class="form-control" name="username" placeholder="登陆账户名" value="{{ user.name }}">
@@ -43,6 +43,15 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="container copyright bottom col-xs-12" style="background-color: #E8E8E8;">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="hidden-sm hidden-xs text-center"><a href="{{ url_for('logout') }}">注销登录</a></div>
+            <div class="hidden-md hidden-lg text-center"><a href="{{ url_for('logout') }}">注销登录</a></div>
         </div>
     </div>
 </div>
