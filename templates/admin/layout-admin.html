@@ -25,6 +25,13 @@
         .input-group{
             margin-bottom:20px;
         }
+        .bottom{
+            position:fixed;
+            left:0px;
+            bottom:0;
+            _position:absolute;
+            _top:expression(document.documentElement.clientHeight + document.documentElement.scrollTop - this.offsetHeight);
+        }
 	</style>
 </head>
 
@@ -32,6 +39,15 @@
 
 {% block menu %}{% endblock %}
 {% block content %}{% endblock %}
+
+<div class="container copyright bottom col-xs-12" style="background-color: #E8E8E8;">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="hidden-sm hidden-xs text-center"><a href="{{ url_for('logout') }}">注销登录</a></div>
+            <div class="hidden-md hidden-lg text-center"><a href="{{ url_for('logout') }}">注销登录</a></div>
+        </div>
+    </div>
+</div>
 
 <script src="http://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

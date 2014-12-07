@@ -32,7 +32,8 @@ class Menu(db.Model):
         menus = []
         for menu in cls.query.order_by(Menu.name.asc()).all():
             if user.is_admin or menu.name == user.permission:
-                menus.append(menu)
+                if menu.parent != 'root':
+                    menus.append(menu)
         return menus
 
 

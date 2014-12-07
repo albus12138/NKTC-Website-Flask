@@ -12,6 +12,7 @@ from wtforms import TextField, TextAreaField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import Required, Optional, Length
 from datetime import datetime
+from sanitize import HTML
 
 from flask_wtf import Form
 from wtforms import TextField, PasswordField
@@ -52,12 +53,15 @@ class LoginForm(Form):
         session["id"] = self.user.id
         self.user.login_time = datetime.now()
 
+    def logout(self):
+        session.pop('id', None)
+
 
 class CreateArticleForm(Form):
     secondary = QuerySelectField(
         "文章所属分类",
         validators=[Required()],
-        query_factory=Menu.query_all,  # TODO: 如果permission != 'admin'，不显示这一项，显示parent != 'root'的菜单
+        query_factory=Menu.query_all,
         get_pk=lambda a: a.id,
         get_label=lambda a: a.name
     )
@@ -66,9 +70,10 @@ class CreateArticleForm(Form):
         Length(max=100)
     ])
     info = TextField("简介（20字以内）", validators=[Required()])
-    text = TextAreaField("正文", validators=[Required()])  # TODO: 验证内容合法性 HTML(),sanitize
+    text = TextAreaField("正文", validators=[Required()])
 
     def create(self):
+        self.text.data = HTML(self.text.data)
         article = Article(**self.data)
         return article.save()
 
@@ -129,6 +134,13 @@ def login():
         form.login()
         return redirect("/")
     return render_template("admin/login.html", form=form)
+
+
+@app.route("/logout")
+def logout():
+    form = LoginForm()
+    form.logout()
+    return redirect("/login")
 
 
 @app.route('/upload/image', methods=['POST'])
@@ -370,7 +382,8 @@ def user_info():
 @login_required
 def admin_article_list():
     if g.user.permission != 'admin':
-        article = Article.query.filter_by(secondary=g.user.permission, show_flag=True).order_by("-id").all()
+        secondary = Menu.query.filter_by(name=g.user.permission).first()
+        article = Article.query.filter_by(secondary=secondary, show_flag=True).order_by("-id").all()
         for item in article:
             item.date = item.date.strftime("%Y-%m-%d %X")
         return render_template('admin/article-list.html', article=article)
