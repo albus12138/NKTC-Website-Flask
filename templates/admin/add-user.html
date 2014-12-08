@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col-xs-6 col-xs-offset-3">
             <h4 class="text-center" style="margin-bottom:40px">添加用户</h4>
-            <form action="{{ url_for('add_user') }}" method="post">
+            <form id="updata-user">
                 <div class="input-group">
                     <span class="glyphicon glyphicon-user input-group-addon" aria-hidden="true"></span>
                     <input type="text" class="form-control" name="username" placeholder="登陆账户名">
@@ -46,7 +46,7 @@
 
                 <div class="form-group">
                     <div class="col-xs-12 text-center">
-                        <button type="button" class="btn btn-primary" id="#updata">提交</button>
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#updata">提交</button>
                     </div>
                 </div>
             </form>
@@ -54,14 +54,20 @@
     </div>
 </div>
 
-<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="updata" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title" id="myModalLabel">请使用谷歌身份验证器扫描二维码</h4>
             </div>
-            <div id="qrcode"></div>
+            <div class="modal-body">
+                <div id="qrcode" style="height: 256px;width: 256px;text-align: center;margin: 0 auto;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="done">完成</button>
+            </div>
         </div>
     </div>
 </div>
@@ -78,18 +84,22 @@
 
 {% block script %}
 <script>
-    $('#updata').on('click', function () {
+    //提交并弹出二维码
+    $('#updata').on('show.bs.modal',function(event){
         var updata_data = $("input[type='text']").serializeArray();
-        $.post("/user/add",updata_data,function(data){//修改user_edit.page为编辑用户提交的页面
-            if(data!="fail"){
-                $('#edit').on('show.bs.modal',function(event) {
-                    var qrcode = new QRCode("qrcode");
-                    qrcode.makeCode(data);
-                })
-            }else{
-                window.alert("更新失败，错误原因为："+data+"\n请联系管理员处理");
-           }
-        });
+        $.post("/user/add", updata_data,function(data){
+            var qrcode = new QRCode("qrcode");
+            qrcode.makeCode(data);
+        })
+    });
+    //提交并弹出结束
+
+    //二维码居中
+    $("img").addClass("center-block");
+
+    //返回
+    $('#done').on('click',function(){
+        location.href ="{{ url_for('admin_user')}}";
     })
 </script>
 <script src="http://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>

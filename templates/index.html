@@ -50,11 +50,11 @@
             {% for item in showcase %}
                 {% if showcase[0] == item %}
                     <div class="item active">
-                        <a href="{{ item.url }}"><img src="{{ url_for('static', filename="img/%s" % item.img) }}" alt="{{ item.text }}"/></a>
+                        <a href="{{ url_for('activity', name=item.url) }}"><img src="{{ url_for('static', filename="img/%s" % item.img) }}" alt="{{ item.text }}"/></a>
                     </div>
                 {% else %}
                     <div class="item">
-                        <a href="{{ item.url }}"><img src="{{ url_for('static', filename="img/%s" % item.img) }}" alt="{{ item.text }}"/></a>
+                        <a href="{{ url_for('activity', name=item.url) }}"><img src="{{ url_for('static', filename="img/%s" % item.img) }}" alt="{{ item.text }}"/></a>
                     </div>
                 {% endif %}
             {% endfor %}

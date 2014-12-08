@@ -69,7 +69,7 @@ class CreateArticleForm(Form):
     text = TextAreaField("正文", validators=[Required()])
 
     def create(self):
-        self.text.data = HTML(self.text.data)
+#        self.text.data = HTML(self.text.data) TODO:安全性与中文不兼容
         article = Article(**self.data)
         return article.save()
 
